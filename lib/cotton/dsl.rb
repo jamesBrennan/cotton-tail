@@ -12,7 +12,7 @@ module Cotton
       @queues = {}
     end
 
-    # Define a new queue routing strategy
+    # Define a new queue
     def queue(name)
       @queues[name] = @queue_strategy.call(name: name)
       yield if block_given?

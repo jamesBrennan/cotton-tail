@@ -10,9 +10,7 @@ module Cotton
 
     def handle(routing_suffix, klass)
       key = routing_key(routing_suffix)
-      @context.instance_eval do
-        handle key, klass
-      end
+      @context.instance_eval { handle key, klass }
     end
 
     private

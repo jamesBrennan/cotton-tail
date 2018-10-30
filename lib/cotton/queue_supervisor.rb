@@ -3,6 +3,7 @@
 require 'fiber'
 
 module Cotton
+  # A supervisor for a single queue
   class QueueSupervisor
     def initialize(queue, router:)
       @queue = queue
@@ -15,7 +16,7 @@ module Cotton
       process
     end
 
-    # Start the supervisor, process all pending messages, and shut down
+    # Start the supervisor, process all pending messages, and stop
     def run
       @queue.close
       start
@@ -25,16 +26,21 @@ module Cotton
 
     def reader
       @reader ||= Fiber.new do
-        return false if @queue.empty? && @queue.closed?
-        @queue.pop
+        Fiber.yield @queue.pop until @queue.empty? && @queue.closed?
       end
     end
 
     def process
-      while @status == :started && reader.alive?
-        router_args = reader.resume
-        @router.dispatch(*router_args) if router_args
-      end
+      dispatch_next while running?
+    end
+
+    def running?
+      @status == :started && reader.alive?
+    end
+
+    def dispatch_next
+      args = reader.resume
+      @router.dispatch(*args) if args
     end
   end
 end

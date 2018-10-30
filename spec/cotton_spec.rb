@@ -18,18 +18,23 @@ describe Cotton do
     def call(*args)
       @calls << args
     end
+
+    def reset
+      @calls = []
+    end
   end
 
   StartSpy = WorkerSpy.new('job.start')
-  StopSpy = WorkerSpy.new('job.stop')
+  TopSpy = WorkerSpy.new('some.top-level.event')
 
   let(:app) do
     Cotton::App.new(**dependencies).define do
       queue 'my_app_inbox' do
         topic 'some.topic.prefix' do
           handle 'job.start', StartSpy
-          handle 'job.stop', StopSpy
         end
+
+        handle 'some.top-level.event.happened', TopSpy
       end
     end
   end
@@ -46,6 +51,11 @@ describe Cotton do
 
   it 'runs without errors' do
     expect(app).to be_truthy
+  end
+
+  before do
+    StartSpy.reset
+    TopSpy.reset
   end
 
   describe 'configuring message queues' do
@@ -72,10 +82,13 @@ describe Cotton do
     let(:queue) { app.queue('my_app_inbox') }
 
     it 'sends messages to the expected handler' do
-      queue.push %w(some.topic.prefix.job.start hello!)
+      queue.push %w[some.topic.prefix.job.start hello!]
+      queue.push ['some.top-level.event.happened', 'something happened']
+
       app.run
 
       expect(StartSpy.calls).to contain_exactly ['hello!']
+      expect(TopSpy.calls).to contain_exactly ['something happened']
     end
   end
 end

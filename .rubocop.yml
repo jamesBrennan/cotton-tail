@@ -1,0 +1,20 @@
+Metrics/LineLength:
+  Max: 120
+  Exclude:
+    - 'lib/tasks/**/*'
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - '*.gemspec'
+
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*'

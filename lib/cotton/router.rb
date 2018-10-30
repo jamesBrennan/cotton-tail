@@ -3,9 +3,8 @@
 module Cotton
   # Register message handlers and dispatch messages to them
   class Router
-
     def self.call
-      self.new
+      new
     end
 
     def initialize
