@@ -34,7 +34,7 @@ module Cotton
     end
 
     def handle(key, handler = nil, &block)
-      handler = handler || block
+      handler ||= block
       router.route key, handler
     end
 

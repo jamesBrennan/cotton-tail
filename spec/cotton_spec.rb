@@ -52,7 +52,7 @@ describe Cotton do
 
   let(:dependencies) do
     {
-      queue_strategy: Cotton::Queue,
+      queue_strategy: Cotton::Queue::Memory,
       routing_strategy: Cotton::Router
     }
   end
