@@ -5,42 +5,43 @@ require 'fiber'
 module Cotton
   # A supervisor for a single queue
   class QueueSupervisor
-    def initialize(queue, router:)
+    def initialize(queue, on_message:)
       @queue = queue
-      @router = router
-      @status = :initialized
+      @on_message = on_message
     end
 
     def start
-      @status = :started
       process
     end
 
-    # Start the supervisor, process all pending messages, and stop
+    # Start the supervisor, process all pending messages, and then stop
     def run
       @queue.close
-      start
+      start.tap(&:join)
     end
 
     private
 
+    # Create or fetch the Fiber that is responsible for reading messages
+    # from the queue.
     def reader
       @reader ||= Fiber.new do
         Fiber.yield @queue.pop until @queue.empty? && @queue.closed?
       end
     end
 
+    # Create or fetch the Thread that is responsible for running the
     def process
-      dispatch_next while running?
+      @process ||= Thread.new { dispatch_next while running? }
     end
 
     def running?
-      @status == :started && reader.alive?
+      reader.alive?
     end
 
     def dispatch_next
       args = reader.resume
-      @router.dispatch(*args) if args
+      @on_message.call(*args) if args
     end
   end
 end

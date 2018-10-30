@@ -35,6 +35,10 @@ describe Cotton do
         end
 
         handle 'some.top-level.event.happened', TopSpy
+
+        handle 'long.running.task' do
+          sleep 1
+        end
       end
     end
   end

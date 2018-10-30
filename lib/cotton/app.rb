@@ -36,7 +36,7 @@ module Cotton
     private
 
     def supervisors
-      queues.map { |_name, queue| QueueSupervisor.new(queue, router: @dsl.router) }
+      queues.map { |_name, queue| QueueSupervisor.new(queue, on_message: @dsl.router) }
     end
   end
 end

@@ -33,7 +33,8 @@ module Cotton
       topic.instance_eval(&block)
     end
 
-    def handle(key, handler)
+    def handle(key, handler = nil, &block)
+      handler = handler || block
       router.route key, handler
     end
 

@@ -18,5 +18,7 @@ module Cotton
     def dispatch(key, *args)
       @handlers[key].call(*args)
     end
+
+    alias call dispatch
   end
 end
