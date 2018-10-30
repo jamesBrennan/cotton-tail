@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'cotton/version'
-
 # Top level namespace for Cotton
 module Cotton
   autoload :App, 'cotton/app'
@@ -10,4 +8,5 @@ module Cotton
   autoload :QueueSupervisor, 'cotton/queue_supervisor'
   autoload :Router, 'cotton/router'
   autoload :Topic, 'cotton/topic'
+  autoload :Version, 'cotton/version'
 end

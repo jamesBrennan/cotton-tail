@@ -1,0 +1,18 @@
+version: '3.4'
+services:
+  cotton:
+    build: .
+    volumes:
+      - .:/usr/src/cotton
+    links:
+      - rabbitmq
+    environment:
+      - AMQP_ADDRESS=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3.7-management
+    ports:
+      - 5672:5672
+      - 15672:15672
