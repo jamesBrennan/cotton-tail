@@ -8,11 +8,10 @@ describe Cotton do
   end
 
   WorkerSpy = Class.new do
-    attr_reader :calls, :name
+    attr_reader :calls
 
-    def initialize(name)
+    def initialize
       @calls = []
-      @name = name
     end
 
     def call(*args)
@@ -24,8 +23,9 @@ describe Cotton do
     end
   end
 
-  StartSpy = WorkerSpy.new('job.start')
-  TopSpy = WorkerSpy.new('some.top-level.event')
+  StartSpy = WorkerSpy.new
+  TopSpy = WorkerSpy.new
+  OtherSpy = WorkerSpy.new
 
   let(:app) do
     Cotton::App.new(**dependencies).define do
@@ -39,6 +39,10 @@ describe Cotton do
         handle 'long.running.task' do
           sleep 1
         end
+      end
+
+      queue 'another_queue' do
+        handle 'another.routing.key', OtherSpy
       end
     end
   end
@@ -60,13 +64,14 @@ describe Cotton do
   before do
     StartSpy.reset
     TopSpy.reset
+    OtherSpy.reset
   end
 
   describe 'configuring message queues' do
     describe '.queues' do
       subject(:queues) { app.queues }
 
-      its(:length) { is_expected.to be 1 }
+      its(:length) { is_expected.to be 2 }
 
       it 'has members that are [name, instance] tuples' do
         name, instance = queues.shift
@@ -84,15 +89,19 @@ describe Cotton do
 
   describe 'routing topic messages' do
     let(:queue) { app.queue('my_app_inbox') }
+    let(:other_queue) { app.queue('another_queue') }
 
     it 'sends messages to the expected handler' do
       queue.push %w[some.topic.prefix.job.start hello!]
       queue.push ['some.top-level.event.happened', 'something happened']
 
+      other_queue.push ['another.routing.key', 'hello also']
+
       app.run
 
       expect(StartSpy.calls).to contain_exactly ['hello!']
       expect(TopSpy.calls).to contain_exactly ['something happened']
+      expect(OtherSpy.calls).to contain_exactly ['hello also']
     end
   end
 end
