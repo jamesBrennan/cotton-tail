@@ -12,13 +12,13 @@ module Cotton
 
     # Define message routing
     def define(&block)
-      @dsl = DSL.new(**@dependencies)
-      @dsl.instance_eval(&block)
+      @definition = DSL::App.new(**@dependencies)
+      @definition.instance_eval(&block)
       self
     end
 
     def queues
-      @dsl.queues
+      @definition.queues
     end
 
     # Get a single message queue
@@ -34,8 +34,8 @@ module Cotton
     private
 
     def supervisors
-      queues.map do |_name, queue|
-        QueueSupervisor.new(queue, on_message: @dsl.router)
+      @supervisors ||= queues.map do |_name, queue|
+        Queue::Supervisor.new(queue, on_message: @definition.router)
       end
     end
   end
