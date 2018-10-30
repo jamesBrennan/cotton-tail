@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 module Cotton
   describe QueueSupervisor do
     subject(:supervisor) { described_class.new(queue, on_message: router) }

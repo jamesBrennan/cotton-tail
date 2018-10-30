@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe Cotton do
   it 'has a version number' do
     expect(Cotton::VERSION).not_to be nil

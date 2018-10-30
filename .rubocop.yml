@@ -9,12 +9,15 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
+    - 'integration/**/*'
     - '*.gemspec'
 
 Style/Documentation:
   Exclude:
     - 'spec/**/*'
+    - 'integration/**/*'
 
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*'
+    - 'integration/**/*'

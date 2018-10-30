@@ -4,10 +4,12 @@ services:
     build: .
     volumes:
       - .:/usr/src/cotton
+    entrypoint: bin/entrypoint.sh
     links:
       - rabbitmq
     environment:
       - AMQP_ADDRESS=amqp://rabbitmq:5672
+      - AMQP_MANAGER_URL=http://guest:guest@rabbitmq:15672
     depends_on:
       - rabbitmq
 
