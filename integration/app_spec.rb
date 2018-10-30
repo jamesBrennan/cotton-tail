@@ -58,8 +58,8 @@ module Cotton
         queue.push %w[work top-level-message]
         app.run
 
-        expect(nested_handler).to have_received(:call).with('nested-message')
-        expect(top_level_handler).to have_received(:call).with('top-level-message')
+        expect(nested_handler).to have_received(:call).with(anything, anything, 'nested-message')
+        expect(top_level_handler).to have_received(:call).with(anything, anything, 'top-level-message')
       end
     end
   end

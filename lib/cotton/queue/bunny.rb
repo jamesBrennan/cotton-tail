@@ -45,8 +45,8 @@ module Cotton
       end
 
       def pop
-        delivery_info, _, payload = queue.pop
-        [delivery_info[:routing_key], payload]
+        delivery_info, *tail = queue.pop
+        [delivery_info[:routing_key], delivery_info] + tail
       end
 
       private
