@@ -15,6 +15,7 @@ module Cotton
     null_handler = -> {}
 
     before { delete_queues queue_name }
+    after { delete_queues queue_name }
 
     describe 'declaring queues' do
       it 'creates queue if it does not exist' do

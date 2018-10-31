@@ -10,14 +10,14 @@ module Cotton
     class Bunny
       extend Forwardable
 
-      def self.call(name:)
-        new(name)
+      def self.call(name:, **opts)
+        new(name, **opts)
       end
 
-      def initialize(name, prefetch: 1, url: nil, durable: true)
+      def initialize(name, prefetch: 1, url: nil, **opts)
         @name = name
         @prefetch = prefetch
-        @durable = durable
+        @opts = opts
         @url = url || ENV.fetch('AMQP_ADDRESS', 'amqp://localhost:5672')
         @closed = false
         queue
@@ -68,7 +68,7 @@ module Cotton
       end
 
       def queue
-        @queue ||= chan.queue(@name, durable: @durable)
+        @queue ||= chan.queue(@name, **@opts)
       end
     end
   end
