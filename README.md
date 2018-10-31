@@ -1,13 +1,13 @@
-# Cotton
+# CottonTail
 
-Cotton provides a simple DSL for consuming messages from a RabbitMQ server
+CottonTail provides a simple DSL for consuming messages from a RabbitMQ server
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'cotton'
+gem 'cotton-tail'
 ```
 
 And then execute:
@@ -16,13 +16,13 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install cotton
+    $ gem install cotton-tail
 
 ## Usage
 
 ### Quick Start
 
-You can look at the file `examples/app.rb` to see an example of what a Cotton
+You can look at the file `examples/app.rb` to see an example of what a CottonTail
 App definition looks like.
 
 To run the example locally you need to have a rabbitmq instance running. The
@@ -54,4 +54,4 @@ to experiment.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/jamesBrennan/cotton.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jamesBrennan/cotton-tail.
