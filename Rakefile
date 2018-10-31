@@ -10,7 +10,7 @@ task default: :spec
 namespace :spec do
   desc 'Run integration specs'
   task :integration do
-    puts `docker-compose exec cotton bundle exec rspec integration`
+    puts `docker-compose exec cotton-tail bundle exec rspec integration`
   end
 
   desc 'Run all specs'

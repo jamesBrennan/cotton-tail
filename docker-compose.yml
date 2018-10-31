@@ -1,9 +1,9 @@
 version: '3.4'
 services:
-  cotton:
+  cotton-tail:
     build: .
     volumes:
-      - .:/usr/src/cotton
+      - .:/usr/src/cotton-tail
     entrypoint: bin/entrypoint.sh
     links:
       - rabbitmq
