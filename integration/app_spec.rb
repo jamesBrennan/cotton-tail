@@ -59,8 +59,47 @@ module Cotton
         queue.push %w[work top-level-message]
         app.run
 
-        expect(nested_handler).to have_received(:call).with(anything, anything, 'nested-message')
-        expect(top_level_handler).to have_received(:call).with(anything, anything, 'top-level-message')
+        expect(nested_handler).to have_received(:call).with(
+          anything, anything, 'nested-message', conn: an_instance_of(Queue::Connection)
+        )
+
+        expect(top_level_handler).to have_received(:call).with(
+          anything, anything, 'top-level-message', conn: an_instance_of(Queue::Connection)
+        )
+      end
+
+      describe 'requiring acknowledgement' do
+        it 'provides ack and nack through a Queue::Connection, passed with the :conn keyword' do
+          AckHandler = Class.new do
+            def self.call(delivery_info, _properties, _message, **kwargs)
+              conn = kwargs.fetch(:conn)
+              conn.ack(delivery_info[:delivery_tag])
+            end
+          end
+
+          NackHandler = Class.new do
+            def self.call(delivery_info, _props, _msg, **kwargs)
+              conn = kwargs.fetch(:conn)
+              conn.nack(delivery_info[:delivery_tag])
+            end
+          end
+
+          conn = Queue::Connection.new
+          expect(conn).to receive(:ack).and_call_original
+          expect(conn).to receive(:nack).and_call_original
+
+          app.define do
+            queue queue_name, conn: conn, manual_ack: true do
+              handle 'must.ack', AckHandler
+              handle 'must.nack', NackHandler
+            end
+          end
+
+          queue = app.queue(queue_name)
+          queue.push %w[must.ack some-message]
+          queue.push %w[must.nack some-message]
+          app.run
+        end
       end
     end
   end

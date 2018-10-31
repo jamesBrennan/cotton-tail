@@ -43,11 +43,8 @@ You should see
 We've included bash scripts to publish messages for the example app. Execute them
 in another terminal window to see output in the app window.
 
-`examples/say.hello.sh`
+`examples/messages/say.hello`, `examples/messages/say.goodbye`, etc...
 
-`examples/say.goodbye.sh`
-
-`examples/inspect.message.sh`
 
 ## Development
 

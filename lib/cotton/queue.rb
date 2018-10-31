@@ -4,6 +4,7 @@ module Cotton
   # Queue namespace
   module Queue
     autoload :Bunny, 'cotton/queue/bunny'
+    autoload :Connection, 'cotton/queue/connection'
     autoload :Memory, 'cotton/queue/memory'
     autoload :Reader, 'cotton/queue/reader'
     autoload :Supervisor, 'cotton/queue/supervisor'

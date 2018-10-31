@@ -1,36 +1,30 @@
 # frozen_string_literal: true
 
-require 'forwardable'
-require 'bunny'
-
 module Cotton
   module Queue
     # A wrapper around a ::Bunny::Queue that makes it interchangeable with a
     # standard Ruby::Queue
     class Bunny
-      extend Forwardable
-
       def self.call(name:, **opts)
         new(name, **opts)
       end
 
-      def initialize(name, prefetch: 1, url: nil, manual_ack: false, **opts)
+      def initialize(name, conn: Connection.new, prefetch: 1, manual_ack: false, **opts)
         @name = name
         @prefetch = prefetch
         @manual_ack = manual_ack
-        @opts = opts
-        @url = url || ENV.fetch('AMQP_ADDRESS', 'amqp://localhost:5672')
+        @conn = conn
         @closed = false
-        queue
+        @queue = conn.queue(@name, **opts)
       end
 
       def bind(routing_key)
-        queue.bind('amq.topic', routing_key: routing_key)
+        @queue.bind('amq.topic', routing_key: routing_key)
       end
 
       def push(args)
         routing_key, message = args
-        exchange.publish message, routing_key: routing_key
+        @conn.publish message, routing_key: routing_key
       end
 
       def close
@@ -42,34 +36,14 @@ module Cotton
       end
 
       def empty?
-        queue.message_count.zero?
+        @queue.message_count.zero?
       end
 
       def pop
         return if empty?
 
-        delivery_info, *tail = queue.pop(manual_ack: @manual_ack)
-        [delivery_info[:routing_key], delivery_info] + tail
-      end
-
-      private
-
-      def exchange
-        @exchange ||= chan.exchange('amq.topic')
-      end
-
-      def conn
-        @conn ||= ::Bunny.new(@url).tap(&:start)
-      end
-
-      def chan
-        @chan ||= conn.create_channel.tap do |ch|
-          ch.prefetch(@prefetch)
-        end
-      end
-
-      def queue
-        @queue ||= chan.queue(@name, **@opts)
+        delivery_info, *tail = @queue.pop(manual_ack: @manual_ack)
+        [delivery_info[:routing_key], delivery_info, *tail, conn: @conn]
       end
     end
   end
