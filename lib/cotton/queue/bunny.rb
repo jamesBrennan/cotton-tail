@@ -14,9 +14,10 @@ module Cotton
         new(name, **opts)
       end
 
-      def initialize(name, prefetch: 1, url: nil, **opts)
+      def initialize(name, prefetch: 1, url: nil, manual_ack: false, **opts)
         @name = name
         @prefetch = prefetch
+        @manual_ack = manual_ack
         @opts = opts
         @url = url || ENV.fetch('AMQP_ADDRESS', 'amqp://localhost:5672')
         @closed = false
@@ -47,7 +48,7 @@ module Cotton
       def pop
         return if empty?
 
-        delivery_info, *tail = queue.pop
+        delivery_info, *tail = queue.pop(manual_ack: @manual_ack)
         [delivery_info[:routing_key], delivery_info] + tail
       end
 
