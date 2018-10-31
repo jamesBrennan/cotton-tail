@@ -8,7 +8,8 @@ Gem::Specification.new do |spec|
   spec.name          = 'cotton'
   spec.version       = Cotton::VERSION
   spec.authors       = ['James Brennan']
-  spec.email         = ['james.brennan@educationsuperhighway.org']
+  spec.email         = ['brennanmusic@gmail.com']
+  spec.homepage      = 'https://github.com/jamesBrennan/cotton'
 
   spec.summary       = 'A simple multi-threaded amqp server'
   spec.description   = 'Simply and easily add AMQP messaging capabilities to

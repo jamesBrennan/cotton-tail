@@ -11,6 +11,7 @@ Metrics/BlockLength:
     - 'spec/**/*'
     - 'integration/**/*'
     - '*.gemspec'
+    - 'examples/app.rb'
 
 Style/Documentation:
   Exclude:
