@@ -21,28 +21,14 @@ module Cotton
         start.tap(&:join)
       end
 
+      def running?
+        true & process.status
+      end
+
       private
 
-      # Create or fetch the Fiber that is responsible for reading messages
-      # from the queue.
-      def reader
-        @reader ||= Fiber.new do
-          Fiber.yield @queue.pop until @queue.empty? && @queue.closed?
-        end
-      end
-
-      # Create or fetch the Thread that is responsible for running the
       def process
-        @process ||= Thread.new { dispatch_next while running? }
-      end
-
-      def running?
-        reader.alive?
-      end
-
-      def dispatch_next
-        args = reader.resume
-        @on_message.call(*args) if args
+        @process ||= Reader.spawn(@queue, on_message: @on_message)
       end
     end
   end

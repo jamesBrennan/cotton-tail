@@ -3,7 +3,7 @@
 module Cotton
   # App is the main class for a Cotton server
   class App
-    def initialize(queue_strategy: Queue::Memory, routing_strategy: Router)
+    def initialize(queue_strategy: Queue::Bunny, routing_strategy: Router)
       @dependencies = {
         queue_strategy: queue_strategy,
         routing_strategy: routing_strategy
@@ -31,12 +31,23 @@ module Cotton
       supervisors.map(&:run).each(&:join)
     end
 
+    def start
+      supervisors.map(&:start)
+      puts 'Waiting for messages ...'
+
+      sleep 0.1 while running?
+    end
+
     private
 
     def supervisors
       @supervisors ||= queues.map do |_name, queue|
         Queue::Supervisor.new(queue, on_message: @definition.router)
       end
+    end
+
+    def running?
+      supervisors.any?(&:running?)
     end
   end
 end

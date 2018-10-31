@@ -14,11 +14,11 @@ module Cotton
         new(name)
       end
 
-      def initialize(name, prefetch: 1, url: ENV['AMQP_ADDRESS'], durable: true)
+      def initialize(name, prefetch: 1, url: nil, durable: true)
         @name = name
         @prefetch = prefetch
         @durable = durable
-        @url = url
+        @url = url || ENV.fetch('AMQP_ADDRESS', 'amqp://localhost:5672')
         @closed = false
         queue
       end
@@ -45,6 +45,8 @@ module Cotton
       end
 
       def pop
+        return if empty?
+
         delivery_info, *tail = queue.pop
         [delivery_info[:routing_key], delivery_info] + tail
       end
