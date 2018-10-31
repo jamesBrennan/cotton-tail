@@ -18,9 +18,36 @@ Or install it yourself as:
 
     $ gem install cotton
 
+## Usage
+
 ### Quick Start
 
-## Usage
+You can look at the file `examples/app.rb` to see an example of what a Cotton
+App definition looks like.
+
+To run the example locally you need to have a rabbitmq instance running. The
+included `docker-compose` file can be used to start up a local instance of
+rabbitmq.
+
+`docker-compose up`
+
+Once the rabbitmq service has completed startup (takes a few seconds) you can
+start the example app.
+
+`bundle exec examples/app.rb`
+
+You should see
+
+`Waiting for messages ...`
+
+We've included bash scripts to publish messages for the example app. Execute them
+in another terminal window to see output in the app window.
+
+`examples/say.hello.sh`
+
+`examples/say.goodbye.sh`
+
+`examples/inspect.message.sh`
 
 ## Development
 
