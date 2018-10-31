@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Cotton
+module CottonTail
   module Queue
     describe Supervisor do
       subject(:supervisor) { described_class.new(queue, on_message: router) }

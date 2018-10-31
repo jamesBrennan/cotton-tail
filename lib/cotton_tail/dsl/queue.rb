@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Cotton
+module CottonTail
   module DSL
     # Queue DSL
     class Queue

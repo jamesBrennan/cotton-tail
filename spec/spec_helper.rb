@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'cotton'
+require 'cotton_tail'
 require 'rspec'
 require 'rspec/its'
 require 'rspec-benchmark'

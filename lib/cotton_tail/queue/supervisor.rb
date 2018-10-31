@@ -2,7 +2,7 @@
 
 require 'fiber'
 
-module Cotton
+module CottonTail
   module Queue
     # A supervisor for a single queue
     class Supervisor

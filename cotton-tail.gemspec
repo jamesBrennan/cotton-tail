@@ -2,14 +2,14 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'cotton/version'
+require 'cotton_tail/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'cotton'
-  spec.version       = Cotton::VERSION
+  spec.name          = 'cotton-tail'
+  spec.version       = CottonTail::VERSION
   spec.authors       = ['James Brennan']
   spec.email         = ['brennanmusic@gmail.com']
-  spec.homepage      = 'https://github.com/jamesBrennan/cotton'
+  spec.homepage      = 'https://github.com/jamesBrennan/cotton-tail'
 
   spec.summary       = 'A simple multi-threaded amqp server'
   spec.description   = 'Simply and easily add AMQP messaging capabilities to

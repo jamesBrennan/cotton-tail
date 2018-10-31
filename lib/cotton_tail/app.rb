@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Cotton
-  # App is the main class for a Cotton server
+module CottonTail
+  # App is the main class for a CottonTail server
   class App
     def initialize(queue_strategy: Queue::Bunny, routing_strategy: Router)
       @dependencies = {

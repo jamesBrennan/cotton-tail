@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-describe Cotton do
+describe CottonTail do
   it 'has a version number' do
-    expect(Cotton::VERSION).not_to be nil
+    expect(CottonTail::VERSION).not_to be nil
   end
 
   WorkerSpy = Class.new do
@@ -26,7 +26,7 @@ describe Cotton do
   OtherSpy = WorkerSpy.new
 
   let(:app) do
-    Cotton::App.new(**dependencies).define do
+    CottonTail::App.new(**dependencies).define do
       queue 'my_app_inbox' do
         topic 'some.topic.prefix' do
           handle 'job.start', StartSpy
@@ -50,8 +50,8 @@ describe Cotton do
 
   let(:dependencies) do
     {
-      queue_strategy: Cotton::Queue::Memory,
-      routing_strategy: Cotton::Router
+      queue_strategy: CottonTail::Queue::Memory,
+      routing_strategy: CottonTail::Router
     }
   end
 

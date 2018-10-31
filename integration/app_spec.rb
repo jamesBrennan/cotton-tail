@@ -3,13 +3,13 @@
 require 'integration_helper'
 
 # Run specs against RabbitMQ server
-module Cotton
+module CottonTail
   describe App do
     include_context 'rabbitmq_api'
 
     subject(:app) { described_class.new(queue_strategy: queue_strategy) }
 
-    let(:queue_strategy) { Cotton::Queue::Bunny }
+    let(:queue_strategy) { CottonTail::Queue::Bunny }
 
     queue_name = 'integration_test_queue'
     null_handler = -> {}

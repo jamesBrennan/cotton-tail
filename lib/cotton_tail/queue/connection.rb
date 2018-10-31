@@ -3,7 +3,7 @@
 require 'forwardable'
 require 'bunny'
 
-module Cotton
+module CottonTail
   module Queue
     # Wrapper for Bunny::Session
     class Connection

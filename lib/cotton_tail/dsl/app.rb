@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Cotton
+module CottonTail
   module DSL
     # This is the top level DSL for defining the bindings and message routing of
     # a cotton App

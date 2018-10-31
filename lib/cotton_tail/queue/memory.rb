@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Cotton
+module CottonTail
   module Queue
     # Simple in-memory queue
     class Memory

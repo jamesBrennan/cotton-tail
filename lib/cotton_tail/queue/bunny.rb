@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Cotton
+module CottonTail
   module Queue
     # A wrapper around a ::Bunny::Queue that makes it interchangeable with a
     # standard Ruby::Queue

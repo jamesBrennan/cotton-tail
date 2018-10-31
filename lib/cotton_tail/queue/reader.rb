@@ -2,7 +2,7 @@
 
 require 'fiber'
 
-module Cotton
+module CottonTail
   module Queue
     # Queue Reader
     class Reader

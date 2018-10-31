@@ -2,9 +2,9 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'cotton'
+require 'cotton_tail'
 
-app = Cotton::App.new.define do
+app = CottonTail::App.new.define do
   # Create the queue 'hello_world_queue' if it does not exists
   queue 'hello_world_queue', exclusive: true do
     # Create a binding from the default topic exchange ('amq.topic') to

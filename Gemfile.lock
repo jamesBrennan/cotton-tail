@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cotton (0.1.0)
+    cotton-tail (0.1.0)
       bunny (~> 2.12)
 
 GEM
@@ -71,7 +71,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.16)
-  cotton!
+  cotton-tail!
   rabbitmq_http_api_client (~> 1.9)
   rake (~> 10.0)
   rspec (~> 3.0)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Cotton
+module CottonTail
   # Register message handlers and dispatch messages to them
   class Router
     def self.call
