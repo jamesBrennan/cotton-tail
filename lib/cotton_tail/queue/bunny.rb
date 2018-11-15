@@ -12,10 +12,10 @@ module CottonTail
       def initialize(name, conn: Connection.new, prefetch: 1, manual_ack: false, **opts)
         @name = name
         @prefetch = prefetch
-        @manual_ack = manual_ack
         @conn = conn
-        @closed = false
         @queue = conn.queue(@name, **opts)
+        @messages = ::Queue.new
+        @queue.subscribe(manual_ack: manual_ack) { |*args| @messages << args }
       end
 
       def bind(routing_key)
@@ -28,21 +28,19 @@ module CottonTail
       end
 
       def close
-        @closed = true
+        @messages.close
       end
 
       def closed?
-        @closed
+        @messages.closed?
       end
 
       def empty?
-        @queue.message_count.zero?
+        @messages.empty?
       end
 
       def pop
-        return if empty?
-
-        delivery_info, *tail = @queue.pop(manual_ack: @manual_ack)
+        delivery_info, *tail = @messages.pop
         [delivery_info[:routing_key], delivery_info, *tail, conn: @conn]
       end
     end
