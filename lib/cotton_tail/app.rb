@@ -35,7 +35,7 @@ module CottonTail
       supervisors.map(&:start)
       puts 'Waiting for messages ...'
 
-      sleep 0.005 while running?
+      sleep 0.01 while running?
     end
 
     private
