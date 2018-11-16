@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.cert_chain  = ['certs/jamesbrennan.pem']
-  spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem') if $PROGRAM_NAME =~ /gem\z/
+  spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem') if $PROGRAM_NAME.end_with? 'gem'
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features|integration)/})
