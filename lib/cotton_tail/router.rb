@@ -16,9 +16,15 @@ module CottonTail
     end
 
     def dispatch(key, *args)
-      @handlers[key].call(*args)
+      stack.call @handlers[key].call(*args)
     end
 
     alias call dispatch
+
+    private
+
+    def stack
+      CottonTail.configuration.middleware
+    end
   end
 end

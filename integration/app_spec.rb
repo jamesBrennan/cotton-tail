@@ -60,11 +60,11 @@ module CottonTail
         app.run
 
         expect(nested_handler).to have_received(:call).with(
-          anything, anything, 'nested-message', conn: an_instance_of(Queue::Connection)
+          anything, anything, 'nested-message'
         )
 
         expect(top_level_handler).to have_received(:call).with(
-          anything, anything, 'top-level-message', conn: an_instance_of(Queue::Connection)
+          anything, anything, 'top-level-message'
         )
       end
 

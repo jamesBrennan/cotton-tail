@@ -50,5 +50,11 @@ module CottonTail
         end
       end
     end
+
+    describe '.middleware' do
+      subject(:middleware) { configuration.middleware }
+
+      it { is_expected.to be_a Middleware::Builder }
+    end
   end
 end
