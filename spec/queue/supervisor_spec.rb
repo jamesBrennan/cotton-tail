@@ -3,16 +3,16 @@
 module CottonTail
   module Queue
     describe Supervisor do
-      subject(:supervisor) { described_class.new(queue, on_message: router) }
+      subject(:supervisor) { described_class.new(queue) }
 
       let(:queue) { ::Queue.new }
-      let(:router) { instance_double(Router) }
+      let(:middleware) { CottonTail.configuration.middleware }
 
       describe '.start' do
         subject(:start) { supervisor.start }
 
         before do
-          allow(router).to receive(:call).and_return -> { sleep 1 }
+          allow(middleware).to receive(:call).and_return -> { sleep 1 }
         end
 
         it { is_expected.to be_a_kind_of(Thread) }
@@ -22,7 +22,7 @@ module CottonTail
           10.times.inject(queue, :push)
 
           # each of which takes 1 second to process
-          allow(router).to receive(:dispatch).and_return -> { sleep 1 }
+          allow(middleware).to receive(:call).and_return -> { sleep 1 }
 
           expect { start }.to perform_under(0.1).sec
         end

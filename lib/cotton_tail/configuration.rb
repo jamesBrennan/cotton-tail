@@ -9,7 +9,7 @@ module CottonTail
 
     def initialize
       @connection_args = nil
-      @middleware = Middleware::Builder.new
+      @middleware = Middleware::DEFAULT_STACK
     end
 
     # Sets the RabbitMQ connection params. Arguments are eventually passed
@@ -27,7 +27,7 @@ module CottonTail
     def middleware
       return @middleware unless block_given?
 
-      @middleware = Middleware::Builder.new do |b|
+      @middleware = ::Middleware::Builder.new do |b|
         b.use @middleware
         yield b
       end

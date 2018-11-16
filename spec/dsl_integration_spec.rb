@@ -10,7 +10,7 @@ module CottonTail
       end
 
       def call(args)
-        @calls << args
+        args.tap { @calls << args }
       end
 
       def reset
@@ -93,6 +93,30 @@ module CottonTail
         expect(StartSpy.calls).to contain_exactly 'hello!'
         expect(TopSpy.calls).to contain_exactly 'something happened'
         expect(OtherSpy.calls).to contain_exactly 'hello also'
+      end
+    end
+
+    describe 'using middleware' do
+      let(:middleware_end_spy) { spy('middleware_end') }
+
+      before do
+        CottonTail.configuration.middleware do |m|
+          m.use ->(msg) { msg.upcase }
+          m.use middleware_end_spy
+        end
+      end
+
+      let(:queue) { app.queue('my_app_inbox') }
+
+      it 'Applies the middleware' do
+        input = 'hello!'
+        expected_output = 'HELLO!'
+
+        expect(middleware_end_spy).to receive(:call).with(expected_output)
+
+        queue.push ['some.topic.prefix.job.start', input]
+
+        app.run
       end
     end
   end

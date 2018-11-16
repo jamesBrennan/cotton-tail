@@ -7,9 +7,8 @@ module CottonTail
     class Routes
       attr_reader :queues
 
-      def initialize(queue_strategy:, routing_strategy:)
+      def initialize(queue_strategy:)
         @queue_strategy = queue_strategy
-        @routing_strategy = routing_strategy
         @queues = {}
       end
 
@@ -43,11 +42,11 @@ module CottonTail
 
       def handle(key, handler = nil, &block)
         handler ||= block
-        router.route key, handler
+        handlers[key] = handler
       end
 
-      def router
-        @router ||= @routing_strategy.call
+      def handlers
+        @handlers ||= {}
       end
     end
   end

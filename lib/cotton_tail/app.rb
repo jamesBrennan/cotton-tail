@@ -3,11 +3,8 @@
 module CottonTail
   # App is the main class for a CottonTail server
   class App
-    def initialize(queue_strategy: Queue::Bunny, routing_strategy: Router)
-      @dependencies = {
-        queue_strategy: queue_strategy,
-        routing_strategy: routing_strategy
-      }
+    def initialize(queue_strategy: Queue::Bunny)
+      @dependencies = { queue_strategy: queue_strategy }
     end
 
     # Define message routing
@@ -44,7 +41,7 @@ module CottonTail
 
     def supervisors
       @supervisors ||= queues.map do |_name, queue|
-        Queue::Supervisor.new(queue, on_message: routes.router)
+        Queue::Supervisor.new(queue)
       end
     end
 

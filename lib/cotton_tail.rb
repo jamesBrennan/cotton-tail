@@ -7,6 +7,7 @@ module CottonTail
   autoload :App, 'cotton_tail/app'
   autoload :Configuration, 'cotton_tail/configuration'
   autoload :DSL, 'cotton_tail/dsl'
+  autoload :Middleware, 'cotton_tail/middleware'
   autoload :Queue, 'cotton_tail/queue'
   autoload :Router, 'cotton_tail/router'
   autoload :Version, 'cotton_tail/version'

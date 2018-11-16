@@ -54,7 +54,16 @@ module CottonTail
     describe '.middleware' do
       subject(:middleware) { configuration.middleware }
 
-      it { is_expected.to be_a Middleware::Builder }
+      it { is_expected.to be_a ::Middleware::Builder }
+
+      describe 'specifying new middleware' do
+        it 'adds the given middleware to the stack' do
+          stack_length = -> { configuration.middleware.send(:stack).length }
+
+          expect { configuration.middleware { |d| d.use ->(x) { puts x } } }
+            .to change(&stack_length).by(1)
+        end
+      end
     end
   end
 end
