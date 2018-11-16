@@ -4,13 +4,17 @@ module CottonTail
   module DSL
     # This is the top level DSL for defining the bindings and message routing of
     # a cotton App
-    class App
+    class Routes
       attr_reader :queues
 
       def initialize(queue_strategy:, routing_strategy:)
         @queue_strategy = queue_strategy
         @routing_strategy = routing_strategy
         @queues = {}
+      end
+
+      def draw(&block)
+        instance_eval(&block)
       end
 
       # Define a new queue
