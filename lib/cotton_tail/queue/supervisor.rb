@@ -6,9 +6,8 @@ module CottonTail
   module Queue
     # A supervisor for a single queue
     class Supervisor
-      def initialize(queue, on_message:)
+      def initialize(queue)
         @queue = queue
-        @on_message = on_message
       end
 
       def start
@@ -28,7 +27,7 @@ module CottonTail
       private
 
       def process
-        @process ||= Reader.spawn(@queue, on_message: @on_message)
+        @process ||= Reader.spawn(@queue)
       end
     end
   end

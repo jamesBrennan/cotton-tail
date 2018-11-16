@@ -9,8 +9,8 @@ module CottonTail
         @calls = []
       end
 
-      def call(*args)
-        @calls << args
+      def call(args)
+        args.tap { @calls << args }
       end
 
       def reset
@@ -22,8 +22,9 @@ module CottonTail
     TopSpy = WorkerSpy.new
     OtherSpy = WorkerSpy.new
 
-    let(:app) do
-      CottonTail::App.new(**dependencies).define do
+    before do
+      CottonTail.reset
+      CottonTail.application(queue_strategy: Queue::Memory).routes.draw do
         queue 'my_app_inbox' do
           topic 'some.topic.prefix' do
             handle 'job.start', StartSpy
@@ -42,15 +43,10 @@ module CottonTail
       end
     end
 
+    let(:app) { CottonTail.application }
+
     let(:start_spy) { spy('start') }
     let(:stop_spy) { spy('stop') }
-
-    let(:dependencies) do
-      {
-        queue_strategy: Queue::Memory,
-        routing_strategy: Router
-      }
-    end
 
     it 'runs without errors' do
       expect(app).to be_truthy
@@ -94,9 +90,33 @@ module CottonTail
 
         app.run
 
-        expect(StartSpy.calls).to contain_exactly ['hello!']
-        expect(TopSpy.calls).to contain_exactly ['something happened']
-        expect(OtherSpy.calls).to contain_exactly ['hello also']
+        expect(StartSpy.calls).to contain_exactly 'hello!'
+        expect(TopSpy.calls).to contain_exactly 'something happened'
+        expect(OtherSpy.calls).to contain_exactly 'hello also'
+      end
+    end
+
+    describe 'using middleware' do
+      let(:middleware_end_spy) { spy('middleware_end') }
+
+      before do
+        CottonTail.configuration.middleware do |m|
+          m.use ->(msg) { msg.upcase }
+          m.use middleware_end_spy
+        end
+      end
+
+      let(:queue) { app.queue('my_app_inbox') }
+
+      it 'Applies the middleware' do
+        input = 'hello!'
+        expected_output = 'HELLO!'
+
+        expect(middleware_end_spy).to receive(:call).with(expected_output)
+
+        queue.push ['some.topic.prefix.job.start', input]
+
+        app.run
       end
     end
   end

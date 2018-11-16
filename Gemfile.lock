@@ -3,6 +3,7 @@ PATH
   specs:
     cotton-tail (0.2.1)
       bunny (~> 2.12)
+      ibsciss-middleware (~> 0.4.2)
 
 GEM
   remote: https://rubygems.org/
@@ -20,6 +21,7 @@ GEM
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
     hashie (3.6.0)
+    ibsciss-middleware (0.4.2)
     jaro_winkler (1.5.1)
     multi_json (1.13.1)
     multipart-post (2.0.0)

@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'bunny', '~> 2.12'
+  spec.add_dependency 'ibsciss-middleware', '~> 0.4.2'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'rabbitmq_http_api_client', '~> 1.9'

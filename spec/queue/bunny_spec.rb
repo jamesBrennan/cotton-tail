@@ -3,7 +3,7 @@
 module CottonTail
   module Queue
     describe Bunny do
-      subject(:queue) { described_class.new(name, exclusive: true) }
+      subject(:queue) { described_class.new(name: name, exclusive: true) }
 
       let(:name) { '' }
 

@@ -10,11 +10,11 @@ module CottonTail
     class Bunny < SimpleDelegator
       extend Forwardable
 
-      def self.call(name:, **opts)
-        new(name, **opts)
+      def self.call(**opts)
+        new(**opts)
       end
 
-      def initialize(name, manual_ack: false, **opts)
+      def initialize(name:, manual_ack: false, **opts)
         super ::Queue.new
 
         @name = name

@@ -3,22 +3,17 @@
 module CottonTail
   # App is the main class for a CottonTail server
   class App
-    def initialize(queue_strategy: Queue::Bunny, routing_strategy: Router)
-      @dependencies = {
-        queue_strategy: queue_strategy,
-        routing_strategy: routing_strategy
-      }
+    def initialize(queue_strategy: Queue::Bunny)
+      @dependencies = { queue_strategy: queue_strategy }
     end
 
     # Define message routing
     def define(&block)
-      @definition = DSL::App.new(**@dependencies)
-      @definition.instance_eval(&block)
-      self
+      tap { routes.draw(&block) }
     end
 
     def queues
-      @definition.queues
+      routes.queues
     end
 
     # Get a single message queue
@@ -38,11 +33,15 @@ module CottonTail
       sleep 0.01 while running?
     end
 
+    def routes
+      @routes ||= DSL::Routes.new(**@dependencies)
+    end
+
     private
 
     def supervisors
       @supervisors ||= queues.map do |_name, queue|
-        Queue::Supervisor.new(queue, on_message: @definition.router)
+        Queue::Supervisor.new(queue)
       end
     end
 
