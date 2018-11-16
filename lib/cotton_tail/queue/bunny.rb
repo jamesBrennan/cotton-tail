@@ -34,13 +34,13 @@ module CottonTail
         [delivery_info[:routing_key], delivery_info, *tail]
       end
 
-      private
-
-      def_delegator :'CottonTail.configuration', :connection_args
-
       def bind(routing_key)
         source.bind('amq.topic', routing_key: routing_key)
       end
+
+      private
+
+      def_delegator :'CottonTail.configuration', :connection_args
 
       def watch_source(manual_ack)
         source.subscribe(manual_ack: manual_ack) { |*args| self << args }
