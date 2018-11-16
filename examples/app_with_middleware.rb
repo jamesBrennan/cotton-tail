@@ -4,33 +4,22 @@
 require 'bundler/setup'
 require 'cotton_tail'
 
-# Simple middleware that logs the given value before and after
-class Trace
-  def initialize(app, value)
-    @app   = app
-    @value = value
-  end
-
-  def call(env)
-    puts "--> #{@value}"
-    @app.call(env)
-    puts "<-- #{@value}"
-  end
+CottonTail.configure.middleware do |d|
+  # This is added to the end of the middleware stack
+  # 'message' is the return value of the handlers defined below
+  d.use ->(message) { puts message.upcase }
 end
 
-CottonTail.configure do |config|
-  config.middleware do |d|
-    d.use Trace, 'A'
-    d.use Trace, 'B'
-  end
-end
-
-app = CottonTail::App.new.define do
+CottonTail.application.routes.draw do
   queue 'hello_world_queue', exclusive: true do
     handle 'say.hello' do
-      puts 'Hello world!'
+      'Hello world!'
+    end
+
+    handle 'say.goodbye' do
+      'Goodbye cruel world!'
     end
   end
 end
 
-app.start
+CottonTail.application.start
