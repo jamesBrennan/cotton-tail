@@ -18,26 +18,30 @@ CottonTail.application.routes.draw do
       puts 'Goodbye cruel world!'
     end
 
-    handle 'inspect.message' do |delivery_info, properties, message|
+    handle 'inspect.message' do |env, routing_key, delivery_info, properties, payload|
+      puts env: env
+      puts routing_key: routing_key
       puts delivery_info: delivery_info
       puts properties: properties
-      puts message: message
+      puts payload: payload
     end
   end
 
   queue 'require_ack_queue', exclusive: true, manual_ack: true do
-    handle 'get.acked' do |delivery_info, _props, _msg, opts|
-      conn = opts[:conn]
+    handle 'get.acked' do |_env, _routing_key, delivery_info, _properties, _message|
       delivery_tag = delivery_info[:delivery_tag]
       puts "acking with #{delivery_tag}"
-      conn.ack(delivery_tag)
+
+      ch = delivery_info[:channel]
+      ch.ack(delivery_tag)
     end
 
-    handle 'get.nacked' do |delivery_info, _props, _msg, opts|
-      conn = opts[:conn]
+    handle 'get.nacked' do |_env, _routing_key, delivery_info, _properties, _message|
       delivery_tag = delivery_info[:delivery_tag]
       puts "nacking with #{delivery_tag}"
-      conn.nack(delivery_tag)
+
+      ch = delivery_info[:channel]
+      ch.nack(delivery_tag)
     end
   end
 end

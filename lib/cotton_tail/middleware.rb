@@ -10,5 +10,8 @@ module CottonTail
     DEFAULT_STACK = ::Middleware::Builder.new do |b|
       b.use Router
     end
+
+    Message = Struct.new(:env, :routing_key, :delivery_info, :properties,
+                         :payload)
   end
 end

@@ -8,9 +8,9 @@ module CottonTail
         @app = app
       end
 
-      def call(message)
-        route, *args = message
-        @app.call handler(route).call(*args)
+      def call(request)
+        message = parse(request)
+        @app.call handler(message.routing_key).call(request)
       end
 
       private
@@ -21,6 +21,10 @@ module CottonTail
 
       def handlers
         CottonTail.application.routes.handlers
+      end
+
+      def parse(msg)
+        Message.new(*msg)
       end
     end
   end

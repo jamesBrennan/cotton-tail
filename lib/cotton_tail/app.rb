@@ -3,13 +3,11 @@
 module CottonTail
   # App is the main class for a CottonTail server
   class App
-    def initialize(queue_strategy: Queue::Bunny)
-      @dependencies = { queue_strategy: queue_strategy }
-    end
+    attr_reader :env
 
-    # Define message routing
-    def define(&block)
-      tap { routes.draw(&block) }
+    def initialize(queue_strategy: Queue::Bunny, env: {})
+      @dependencies = { queue_strategy: queue_strategy }
+      @env = env
     end
 
     def queues

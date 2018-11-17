@@ -6,6 +6,7 @@ module CottonTail
     describe Router do
       subject(:router) { described_class.new(app) }
       let(:app) { spy('app') }
+      let(:env) { 'env' }
 
       describe '.call' do
         let(:routing_key) { 'my.test.route' }
@@ -18,14 +19,14 @@ module CottonTail
 
         context 'when a route is defined' do
           it 'calls the handler' do
-            router.call([routing_key, 1, 'two'])
-            expect(handler).to have_received(:call).with(1, 'two')
+            router.call([env, routing_key, 1, 'two'])
+            expect(handler).to have_received(:call).with([env, routing_key, 1, 'two'])
           end
         end
 
         context 'when route is not defined' do
           it 'raises an error' do
-            expect { router.call(['some.unknown.route', 1, 'two']) }
+            expect { router.call([env, 'some.unknown.route', 1, 'two']) }
               .to raise_error(UndefinedRouteError)
           end
         end
