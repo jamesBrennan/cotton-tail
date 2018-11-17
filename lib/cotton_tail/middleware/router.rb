@@ -15,9 +15,8 @@ module CottonTail
 
       private
 
-      # TODO: return error on undefined route
       def handler(route)
-        handlers.fetch(route)
+        handlers.fetch(route) { raise UndefinedRouteError }
       end
 
       def handlers

@@ -25,7 +25,7 @@ module CottonTail
     before do
       CottonTail.reset
       CottonTail.application(queue_strategy: Queue::Memory).routes.draw do
-        queue 'my_app_inbox' do
+        queue 'my_app_inbox', exclusive: true do
           topic 'some.topic.prefix' do
             handle 'job.start', StartSpy
           end
@@ -37,7 +37,7 @@ module CottonTail
           end
         end
 
-        queue 'another_queue' do
+        queue 'another_queue', exclusive: true do
           handle 'another.routing.key', OtherSpy
         end
       end

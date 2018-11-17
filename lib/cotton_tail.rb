@@ -52,4 +52,7 @@ module CottonTail
       MSG
     end
   end
+
+  class UndefinedRouteError < StandardError
+  end
 end
