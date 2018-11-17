@@ -65,5 +65,18 @@ module CottonTail
         end
       end
     end
+
+    describe 'arbitrary configurations' do
+      it 'can be set and retrieved' do
+        expect { configuration.foo = 'bar' }.to(
+          change { configuration.respond_to?(:foo) }.from(false).to(true)
+        )
+
+        expect(configuration.foo).to eql 'bar'
+
+        configuration.foo = 'baz'
+        expect(configuration.foo).to eql 'baz'
+      end
+    end
   end
 end

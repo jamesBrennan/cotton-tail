@@ -10,6 +10,7 @@ module CottonTail
     def initialize
       @connection_args = nil
       @middleware = Middleware::DEFAULT_STACK
+      @user_configs = {}
     end
 
     # Sets the RabbitMQ connection params. Arguments are eventually passed
@@ -31,6 +32,34 @@ module CottonTail
         b.use @middleware
         yield b
       end
+    end
+
+    def method_missing(method_id, *arguments, &block)
+      if user_config? method_id
+        @user_configs[method_id]
+      elsif setter?(method_id) && arguments.length == 1
+        @user_configs[getter_name(method_id)] = arguments.first
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(method_id, include_private = false)
+      user_config?(method_id) || super
+    end
+
+    private
+
+    def setter?(method_id)
+      method_id.to_s.end_with? '='
+    end
+
+    def user_config?(method_id)
+      @user_configs.key?(method_id)
+    end
+
+    def getter_name(setter)
+      setter.to_s.sub('=', '').to_sym
     end
   end
 end
