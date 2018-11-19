@@ -23,7 +23,7 @@ module CottonTail
       def start
         while fiber.alive?
           args = fiber.resume
-          stack.call(args) if args
+          stack.call([env, *args]) if args
         end
       end
 
@@ -31,6 +31,10 @@ module CottonTail
 
       def stack
         CottonTail.configuration.middleware
+      end
+
+      def env
+        CottonTail.application.env
       end
     end
   end

@@ -12,6 +12,11 @@ module CottonTail
   autoload :Router, 'cotton_tail/router'
   autoload :Version, 'cotton_tail/version'
 
+  # Message is a struct for working with the messages that are passed through
+  # the middleware stack.
+  Message = Struct.new(:env, :routing_key, :delivery_info, :properties,
+                       :payload)
+
   class << self
     # Yields or returns the CottonTail::Configuration instance if given a block.
     def configure

@@ -81,6 +81,7 @@ module CottonTail
     describe 'routing topic messages' do
       let(:queue) { app.queue('my_app_inbox') }
       let(:other_queue) { app.queue('another_queue') }
+      let(:env) { CottonTail.application.env }
 
       it 'sends messages to the expected handler' do
         queue.push %w[some.topic.prefix.job.start hello!]
@@ -90,9 +91,17 @@ module CottonTail
 
         app.run
 
-        expect(StartSpy.calls).to contain_exactly 'hello!'
-        expect(TopSpy.calls).to contain_exactly 'something happened'
-        expect(OtherSpy.calls).to contain_exactly 'hello also'
+        expect(StartSpy.calls).to(
+          contain_exactly([env, 'some.topic.prefix.job.start', 'hello!'])
+        )
+
+        expect(TopSpy.calls).to(
+          contain_exactly([env, 'some.top-level.event.happened', 'something happened'])
+        )
+
+        expect(OtherSpy.calls).to(
+          contain_exactly([env, 'another.routing.key', 'hello also'])
+        )
       end
     end
 
@@ -101,21 +110,18 @@ module CottonTail
 
       before do
         CottonTail.configuration.middleware do |m|
-          m.use ->(msg) { msg.upcase }
+          m.use ->((_env, _routing_key, message)) { message.upcase }
           m.use middleware_end_spy
         end
       end
 
       let(:queue) { app.queue('my_app_inbox') }
+      let(:routing_key) { 'some.topic.prefix.job.start' }
 
       it 'Applies the middleware' do
-        input = 'hello!'
-        expected_output = 'HELLO!'
+        expect(middleware_end_spy).to receive(:call).with('HELLO !')
 
-        expect(middleware_end_spy).to receive(:call).with(expected_output)
-
-        queue.push ['some.topic.prefix.job.start', input]
-
+        queue.push [routing_key, 'hello !']
         app.run
       end
     end
