@@ -7,8 +7,9 @@ module CottonTail
     class Routes
       attr_reader :queues
 
-      def initialize(queue_strategy:)
+      def initialize(queue_strategy:, connection:)
         @queue_strategy = queue_strategy
+        @connection = connection
         @queues = {}
       end
 
@@ -18,7 +19,7 @@ module CottonTail
 
       # Define a new queue
       def queue(name, **opts, &block)
-        @queue_strategy.call(name: name, **opts).tap do |queue_instance|
+        @queue_strategy.call(name: name, connection: @connection, **opts).tap do |queue_instance|
           @queues[name] = queue_instance
           queue_dsl = Queue.new(name, queue_instance, self)
           queue_dsl.instance_eval(&block) if block_given?

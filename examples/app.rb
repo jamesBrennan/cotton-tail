@@ -4,7 +4,9 @@
 require 'bundler/setup'
 require 'cotton_tail'
 
-CottonTail.application.routes.draw do
+app = CottonTail::App.new
+
+app.routes.draw do
   # Create the queue 'hello_world_queue' if it does not exists
   queue 'hello_world_queue', exclusive: true do
     # Create a binding from the default topic exchange ('amq.topic') to
@@ -46,4 +48,4 @@ CottonTail.application.routes.draw do
   end
 end
 
-CottonTail.application.start
+app.start

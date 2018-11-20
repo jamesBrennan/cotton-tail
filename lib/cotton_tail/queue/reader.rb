@@ -6,12 +6,13 @@ module CottonTail
   module Queue
     # Queue Reader
     class Reader
-      def self.spawn(queue)
-        Thread.new { new(queue).start }
+      def self.spawn(queue, **kwargs)
+        Thread.new { new(queue, **kwargs).start }
       end
 
-      def initialize(queue)
+      def initialize(queue, app:)
         @queue = queue
+        @app = app
       end
 
       def fiber
@@ -26,17 +27,13 @@ module CottonTail
 
       private
 
-      def stack
-        CottonTail.configuration.middleware
-      end
-
-      def env
-        CottonTail.application.env
-      end
-
       def call_next
         args = fiber.resume
-        stack.call([env, *args]) if args
+        middleware.call([@app, *args]) if args
+      end
+
+      def middleware
+        @app.config.middleware
       end
     end
   end

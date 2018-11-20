@@ -23,8 +23,7 @@ module CottonTail
     OtherSpy = WorkerSpy.new
 
     before do
-      CottonTail.reset
-      CottonTail.application(queue_strategy: Queue::Memory).routes.draw do
+      app.routes.draw do
         queue 'my_app_inbox', exclusive: true do
           topic 'some.topic.prefix' do
             handle 'job.start', StartSpy
@@ -43,7 +42,7 @@ module CottonTail
       end
     end
 
-    let(:app) { CottonTail.application }
+    let(:app) { CottonTail::App.new(queue_strategy: Queue::Memory) }
 
     let(:start_spy) { spy('start') }
     let(:stop_spy) { spy('stop') }
@@ -81,7 +80,7 @@ module CottonTail
     describe 'routing topic messages' do
       let(:queue) { app.queue('my_app_inbox') }
       let(:other_queue) { app.queue('another_queue') }
-      let(:env) { CottonTail.application.env }
+      let(:env) { app.env }
 
       it 'sends messages to the expected handler' do
         queue.push %w[some.topic.prefix.job.start hello!]
@@ -109,7 +108,7 @@ module CottonTail
       let(:middleware_end_spy) { spy('middleware_end') }
 
       before do
-        CottonTail.configuration.middleware do |m|
+        app.config.middleware do |m|
           m.use ->((_env, _routing_key, message)) { message.upcase }
           m.use middleware_end_spy
         end

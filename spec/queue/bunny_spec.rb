@@ -3,9 +3,10 @@
 module CottonTail
   module Queue
     describe Bunny do
-      subject(:queue) { described_class.new(name: name, exclusive: true) }
+      subject(:queue) { described_class.new(name: name, exclusive: true, connection: connection) }
 
       let(:name) { '' }
+      let(:connection) { ::Bunny.new.start }
 
       describe 'push and pulling' do
         let(:routing_key) { 'some.routing.key' }

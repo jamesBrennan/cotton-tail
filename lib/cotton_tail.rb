@@ -14,49 +14,8 @@ module CottonTail
 
   # Message is a struct for working with the messages that are passed through
   # the middleware stack.
-  Message = Struct.new(:env, :routing_key, :delivery_info, :properties,
+  Message = Struct.new(:app, :routing_key, :delivery_info, :properties,
                        :payload)
-
-  class << self
-    # Yields or returns the CottonTail::Configuration instance if given a block.
-    def configure
-      return configuration unless block_given?
-
-      yield configuration
-    end
-
-    def configuration
-      @configuration ||= Configuration.new
-    end
-
-    def application(**kwargs)
-      raise AppInstantiationError, kwargs if @application && !kwargs.empty?
-
-      @application ||= App.new(**kwargs)
-    end
-
-    def reset
-      @configuration = nil
-      @application = nil
-    end
-  end
-
-  # Raised when .application is called with arguments and an @application instance
-  # is already defined
-  class AppInstantiationError < StandardError
-    def initialize(args)
-      super message(args)
-    end
-
-    private
-
-    def message(args)
-      <<-MSG
-          CottonTail.application called with args #{args}, which will be ignored since
-          an instance of CottonTail::App has already been instantiated and memoized.
-      MSG
-    end
-  end
 
   class UndefinedRouteError < StandardError
   end

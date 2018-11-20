@@ -10,21 +10,23 @@ module CottonTail
 
       def call(request)
         message = parse(request)
-        @app.call handler(message.routing_key).call(request)
+        request.shift
+        request.unshift message.app.env
+        @app.call handler(message.app, message.routing_key).call(request)
       end
 
       private
 
-      def handler(route)
-        handlers.fetch(route) { raise UndefinedRouteError }
-      end
-
-      def handlers
-        CottonTail.application.routes.handlers
+      def handler(app, route)
+        handlers(app).fetch(route) { raise UndefinedRouteError }
       end
 
       def parse(msg)
         Message.new(*msg)
+      end
+
+      def handlers(app)
+        app.routes.handlers
       end
     end
   end

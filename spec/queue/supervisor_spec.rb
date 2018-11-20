@@ -3,10 +3,12 @@
 module CottonTail
   module Queue
     describe Supervisor do
-      subject(:supervisor) { described_class.new(queue) }
+      subject(:supervisor) { described_class.new(queue, app: app) }
 
       let(:queue) { ::Queue.new }
-      let(:middleware) { CottonTail.configuration.middleware }
+      let(:app) { instance_double(App, config: config) }
+      let(:config) { instance_double(Configuration, middleware: middleware) }
+      let(:middleware) { double('middleware stack') }
 
       describe '.start' do
         subject(:start) { supervisor.start }

@@ -14,11 +14,12 @@ module CottonTail
         new(**opts)
       end
 
-      def initialize(name:, manual_ack: false, **opts)
+      def initialize(name:, connection:, manual_ack: false, **opts)
         super ::Queue.new
 
         @name = name
         @source_opts = opts
+        @connection = connection
 
         watch_source manual_ack
       end
@@ -40,14 +41,10 @@ module CottonTail
 
       private
 
-      def_delegator :'CottonTail.configuration', :connection_args
+      attr_reader :connection
 
       def watch_source(manual_ack)
         source.subscribe(manual_ack: manual_ack) { |*args| self << args }
-      end
-
-      def connection
-        @connection ||= ::Bunny.new(*connection_args).start
       end
 
       def source
