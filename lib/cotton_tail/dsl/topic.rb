@@ -9,9 +9,9 @@ module CottonTail
         @context = context
       end
 
-      def handle(routing_suffix, klass)
+      def handle(routing_suffix, handler = nil, &block)
         key = routing_key(routing_suffix)
-        @context.instance_eval { handle key, klass }
+        @context.instance_eval { handle key, handler, &block }
       end
 
       private
