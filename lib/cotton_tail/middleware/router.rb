@@ -4,29 +4,26 @@ module CottonTail
   module Middleware
     # Router Middleware
     class Router
-      def initialize(app)
+      attr_reader :handlers
+
+      def initialize(app, handlers:)
         @app = app
+        @handlers = handlers
       end
 
-      def call(request)
-        message = parse(request)
-        request.shift
-        request.unshift message.app.env
-        @app.call handler(message.app, message.routing_key).call(request)
+      def call(message)
+        env, req, = message
+        @app.call [env, req, response(req.routing_key, message)]
       end
 
       private
 
-      def handler(app, route)
-        handlers(app).fetch(route) { raise UndefinedRouteError }
+      def handler(route)
+        handlers.fetch(route) { raise UndefinedRouteError }
       end
 
-      def parse(msg)
-        Message.new(*msg)
-      end
-
-      def handlers(app)
-        app.routes.handlers
+      def response(routing_key, message)
+        CottonTail::Response.new handler(routing_key).call(message)
       end
     end
   end

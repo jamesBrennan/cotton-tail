@@ -28,12 +28,16 @@ module CottonTail
       private
 
       def call_next
-        args = fiber.resume
-        middleware.call([@app, *args]) if args
+        request = fiber.resume
+        middleware.call([env, request, Response.new]) if request
       end
 
       def middleware
         @app.config.middleware
+      end
+
+      def env
+        @app.env
       end
     end
   end

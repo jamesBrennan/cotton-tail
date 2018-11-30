@@ -8,8 +8,10 @@ module CottonTail
   module Middleware
     autoload :Router, 'cotton_tail/middleware/router'
 
-    DEFAULT_STACK = ::Middleware::Builder.new do |b|
-      b.use Router
+    def self.default_stack(app)
+      ::Middleware::Builder.new do |b|
+        b.use Router, handlers: app.routes.handlers
+      end
     end
   end
 end

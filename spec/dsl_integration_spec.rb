@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+def build_request(routing_key, payload)
+  CottonTail::Request.new({ routing_key: routing_key }, {}, payload)
+end
+
 module CottonTail
   describe 'Defining a CottonTail App' do
     WorkerSpy = Class.new do
@@ -83,23 +87,26 @@ module CottonTail
       let(:env) { app.env }
 
       it 'sends messages to the expected handler' do
-        queue.push %w[some.topic.prefix.job.start hello!]
-        queue.push ['some.top-level.event.happened', 'something happened']
+        start_request = build_request('some.topic.prefix.job.start', 'hello!')
+        top_request = build_request('some.top-level.event.happened', 'something happened')
+        other_request = build_request('another.routing.key', 'hello also')
 
-        other_queue.push ['another.routing.key', 'hello also']
+        queue.push start_request
+        queue.push top_request
+        other_queue.push other_request
 
         app.run
 
         expect(StartSpy.calls).to(
-          contain_exactly([env, 'some.topic.prefix.job.start', 'hello!'])
+          match([[env, start_request, anything]])
         )
 
         expect(TopSpy.calls).to(
-          contain_exactly([env, 'some.top-level.event.happened', 'something happened'])
+          match([[env, top_request, anything]])
         )
 
         expect(OtherSpy.calls).to(
-          contain_exactly([env, 'another.routing.key', 'hello also'])
+          match([[env, other_request, anything]])
         )
       end
     end
@@ -109,18 +116,21 @@ module CottonTail
 
       before do
         app.config.middleware do |m|
-          m.use ->((_env, _routing_key, message)) { message.upcase }
+          m.use ->((_env, request, _response)) { request.payload.upcase }
           m.use middleware_end_spy
         end
       end
 
       let(:queue) { app.queue('my_app_inbox') }
       let(:routing_key) { 'some.topic.prefix.job.start' }
+      let(:request) { build_request(routing_key, 'hello!') }
 
       it 'Applies the middleware' do
-        expect(middleware_end_spy).to receive(:call).with('HELLO !')
+        expect(middleware_end_spy).to(
+          receive(:call).with('HELLO!')
+        )
 
-        queue.push [routing_key, 'hello !']
+        queue.push request
         app.run
       end
     end

@@ -7,9 +7,9 @@ module CottonTail
   class Configuration
     attr_reader :connection_args
 
-    def initialize
+    def initialize(middleware: nil)
       @connection_args = nil
-      @middleware = Middleware::DEFAULT_STACK
+      @middleware = middleware
       @user_configs = {}
     end
 
@@ -29,7 +29,7 @@ module CottonTail
       return @middleware unless block_given?
 
       @middleware = ::Middleware::Builder.new do |b|
-        b.use @middleware
+        b.use @middleware if @middleware
         yield b
       end
     end

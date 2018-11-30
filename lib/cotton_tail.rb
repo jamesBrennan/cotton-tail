@@ -12,10 +12,21 @@ module CottonTail
   autoload :Router, 'cotton_tail/router'
   autoload :Version, 'cotton_tail/version'
 
-  # Message is a struct for working with the messages that are passed through
-  # the middleware stack.
-  Message = Struct.new(:app, :routing_key, :delivery_info, :properties,
-                       :payload)
+  Request = Struct.new(:delivery_info, :properties, :payload) do
+    def routing_key
+      delivery_info[:routing_key]
+    end
+
+    def delivery_tag
+      delivery_info[:delivery_tag]
+    end
+
+    def channel
+      delivery_info[:channel]
+    end
+  end
+
+  Response = Struct.new(:body)
 
   class UndefinedRouteError < StandardError
   end

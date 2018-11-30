@@ -4,29 +4,41 @@ module CottonTail
   module Middleware
     # Router Middleware
     describe Router do
-      subject(:router) { described_class.new(input) }
-      let(:input) { spy('message') }
+      subject(:router) { described_class.new(app, handlers: route_handlers) }
 
-      let(:app) { instance_double(App, routes: routes, env: env) }
-      let(:routes) { instance_double(DSL::Routes, handlers: route_handlers) }
-      let(:env) { 'env' }
+      let(:env) { Hash[] }
+      let(:request) { CottonTail::Request.new(delivery_info, {}, payload) }
+      let(:response) { CottonTail::Response.new }
+
+      let(:delivery_info) { { routing_key: routing_key } }
+      let(:message) { [env, request, response] }
+
+      let(:app) { double('middleware app') }
 
       describe '.call' do
-        let(:routing_key) { 'my.test.route' }
-        let(:handler) { spy('handler') }
-        let(:route_handlers) { Hash[routing_key, handler] }
+        let(:payload) { 'payload' }
 
         context 'when a route is defined' do
+          let(:routing_key) { 'my.test.route' }
+          let(:handler) { double('handler') }
+          let(:route_handlers) { Hash[routing_key, handler] }
+
           it 'calls the handler' do
-            router.call([app, routing_key, 1, 'two'])
-            expect(handler).to have_received(:call).with([env, routing_key, 1, 'two'])
+            expect(handler).to receive(:call).with(message) { 'return val' }
+            expect(app).to(
+              receive(:call).with([env, request, Response.new('return val')])
+            )
+
+            router.call(message)
           end
         end
 
         context 'when route is not defined' do
+          let(:routing_key) { 'some.unknown.route' }
+          let(:route_handlers) { Hash[] }
+
           it 'raises an error' do
-            expect { router.call([app, 'some.unknown.route', 1, 'two']) }
-              .to raise_error(UndefinedRouteError)
+            expect { router.call(message) }.to raise_error(UndefinedRouteError)
           end
         end
       end

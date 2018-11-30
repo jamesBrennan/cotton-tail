@@ -12,18 +12,11 @@ module CottonTail
         let(:routing_key) { 'some.routing.key' }
 
         it 'works as expected' do
-          queue.push [routing_key, 'hello']
+          queue.push CottonTail::Request.new({ routing_key: routing_key }, {}, 'hello')
 
           message = queue.pop
-
-          expect(message).to be_a Array
-
-          key, delivery_info, properties, payload = message
-
-          expect(key).to eql routing_key
-          expect(delivery_info).to be_a ::Bunny::DeliveryInfo
-          expect(properties).to be_a ::Bunny::MessageProperties
-          expect(payload).to eql 'hello'
+          expect(message).to be_a Request
+          expect(message.payload).to eql 'hello'
         end
       end
     end
