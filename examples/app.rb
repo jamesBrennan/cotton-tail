@@ -20,30 +20,22 @@ app.routes.draw do
       puts 'Goodbye cruel world!'
     end
 
-    handle 'inspect.message' do |env, routing_key, delivery_info, properties, payload|
+    handle 'inspect.message' do |env, request, response|
       puts env: env
-      puts routing_key: routing_key
-      puts delivery_info: delivery_info
-      puts properties: properties
-      puts payload: payload
+      puts request: request
+      puts response: response
     end
   end
 
   queue 'require_ack_queue', exclusive: true, manual_ack: true do
-    handle 'get.acked' do |_env, _routing_key, delivery_info, _properties, _message|
-      delivery_tag = delivery_info[:delivery_tag]
-      puts "acking with #{delivery_tag}"
-
-      ch = delivery_info[:channel]
-      ch.ack(delivery_tag)
+    handle 'get.acked' do |_env, request, _response|
+      puts "acking with #{request.delivery_tag}"
+      request.channel.ack(request.delivery_tag)
     end
 
-    handle 'get.nacked' do |_env, _routing_key, delivery_info, _properties, _message|
-      delivery_tag = delivery_info[:delivery_tag]
-      puts "nacking with #{delivery_tag}"
-
-      ch = delivery_info[:channel]
-      ch.nack(delivery_tag)
+    handle 'get.nacked' do |_env, request, _response|
+      puts "nacking with #{request.delivery_tag}"
+      request.channel.nack(request.delivery_tag)
     end
   end
 end

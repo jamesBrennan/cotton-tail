@@ -6,10 +6,20 @@ require 'cotton_tail'
 
 app = CottonTail::App.new
 
-app.config.middleware do |_b|
+upcase = lambda { |(env, req, res)|
+  [env, req, CottonTail::Response.new(res.body.upcase)]
+}
+
+print = lambda { |(env, req, res)|
+  puts res.body
+  [env, req, res]
+}
+
+app.config.middleware do |d|
   # This is added to the end of the middleware stack
   # 'message' is the return value of the handlers defined below
-  d.use ->(message) { puts message.upcase }
+  d.use upcase
+  d.use print
 end
 
 app.routes.draw do
