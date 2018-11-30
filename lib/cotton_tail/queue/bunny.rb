@@ -24,15 +24,13 @@ module CottonTail
         watch_source manual_ack
       end
 
-      def push(args)
-        routing_key, message = args
-        bind routing_key
-        exchange.publish message, routing_key: routing_key
+      def push(request)
+        bind request.routing_key
+        exchange.publish request.payload, routing_key: request.routing_key
       end
 
       def pop
-        delivery_info, *tail = super
-        [delivery_info[:routing_key], delivery_info, *tail]
+        Request.new(*super)
       end
 
       def bind(routing_key)

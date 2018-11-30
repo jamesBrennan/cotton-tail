@@ -6,7 +6,7 @@ module CottonTail
       subject(:supervisor) { described_class.new(queue, app: app) }
 
       let(:queue) { ::Queue.new }
-      let(:app) { instance_double(App, config: config) }
+      let(:app) { instance_double(App, config: config, env: {}) }
       let(:config) { instance_double(Configuration, middleware: middleware) }
       let(:middleware) { double('middleware stack') }
 

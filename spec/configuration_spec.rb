@@ -54,10 +54,10 @@ module CottonTail
     describe '.middleware' do
       subject(:middleware) { configuration.middleware }
 
-      it { is_expected.to be_a ::Middleware::Builder }
+      it { is_expected.to be nil }
 
       let(:stack_length) do
-        -> { configuration.middleware.send(:stack).length }
+        -> { configuration.middleware ? configuration.middleware.send(:stack).length : 0 }
       end
 
       describe 'specifying new middleware' do

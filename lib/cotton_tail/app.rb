@@ -3,13 +3,16 @@
 module CottonTail
   # App is the main class for a CottonTail server
   class App
-    attr_reader :env, :config
+    attr_reader :env
 
-    def initialize(queue_strategy: Queue::Bunny, env: {}, connection: Bunny.new, config: Configuration.new)
+    def initialize(queue_strategy: Queue::Bunny, env: {}, connection: Bunny.new)
       @dependencies = { queue_strategy: queue_strategy, connection: connection }
       @env = env
-      @config = config
       @connection = connection.start
+    end
+
+    def config
+      @config ||= Configuration.new(middleware: Middleware.default_stack(self))
     end
 
     def queues

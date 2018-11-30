@@ -14,8 +14,16 @@ module CottonTail
 
   # Message is a struct for working with the messages that are passed through
   # the middleware stack.
-  Message = Struct.new(:app, :routing_key, :delivery_info, :properties,
+  Message = Struct.new(:env, :routing_key, :delivery_info, :properties,
                        :payload)
+
+  Request = Struct.new(:delivery_info, :properties, :payload) do
+    def routing_key
+      delivery_info[:routing_key]
+    end
+  end
+
+  Response = Struct.new(:body)
 
   class UndefinedRouteError < StandardError
   end
