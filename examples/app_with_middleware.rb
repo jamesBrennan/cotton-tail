@@ -7,7 +7,8 @@ require 'cotton_tail'
 app = CottonTail::App.new
 
 upcase = lambda { |(env, req, res)|
-  [env, req, CottonTail::Response.new(res.body.upcase)]
+  res[:body] = res.body.upcase
+  [env, req, res]
 }
 
 print = lambda { |(env, req, res)|
@@ -15,9 +16,24 @@ print = lambda { |(env, req, res)|
   [env, req, res]
 }
 
+Interceptor = Class.new do
+  def initialize(app)
+    @app = app
+  end
+
+  def call(msg)
+    _env, req, _res = msg
+    if req.routing_key == 'intercept.with.middleware'
+      puts 'INTERCEPTED!'
+      return
+    end
+
+    @app.call msg
+  end
+end
+
 app.config.middleware do |d|
-  # This is added to the end of the middleware stack
-  # 'message' is the return value of the handlers defined below
+  d.insert_before CottonTail::Middleware::Router, Interceptor
   d.use upcase
   d.use print
 end
@@ -31,6 +47,8 @@ app.routes.draw do
     handle 'say.goodbye' do
       'Goodbye cruel world!'
     end
+
+    bind 'intercept.with.middleware'
   end
 end
 
