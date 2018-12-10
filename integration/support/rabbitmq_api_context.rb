@@ -24,7 +24,8 @@ RabbitAPI = Class.new do
     end
 
     def bunny
-      @bunny ||= Bunny.new.tap(&:start)
+      @bunny ||= Bunny.new(automatically_recover: false, connection_timeout: 3)
+                      .tap(&:start)
     end
 
     def channel
