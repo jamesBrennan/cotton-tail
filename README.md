@@ -1,6 +1,7 @@
 # CottonTail
 
 [![CircleCI](https://img.shields.io/circleci/project/github/jamesBrennan/cotton-tail.svg?style=svg)](https://circleci.com/gh/jamesBrennan/cotton-tail)
+[![Depfu](https://badges.depfu.com/badges/4a33988ba774e985f135172f5f17d86f/overview.svg)](https://depfu.com/github/jamesBrennan/cotton-tail?project_id=6465)
 
 CottonTail provides a simple DSL for consuming messages from a RabbitMQ server.
 
