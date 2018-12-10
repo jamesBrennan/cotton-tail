@@ -1,5 +1,7 @@
 # CottonTail
 
+[![CircleCI](https://img.shields.io/circleci/project/github/jamesBrennan/cotton-tail.svg?style=svg)](https://circleci.com/gh/jamesBrennan/cotton-tail)
+
 CottonTail provides a simple DSL for consuming messages from a RabbitMQ server.
 
 This gem is in early development. The API will be unstable until the 1.0.0
