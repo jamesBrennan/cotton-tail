@@ -6,6 +6,8 @@ end
 
 module CottonTail
   describe 'Defining a CottonTail App' do
+    include_context 'rabbitmq_api'
+
     WorkerSpy = Class.new do
       attr_reader :calls
 
@@ -46,7 +48,9 @@ module CottonTail
       end
     end
 
-    let(:app) { CottonTail::App.new(queue_strategy: Queue::Memory) }
+    let(:app) do
+      CottonTail::App.new(connection: connection, queue_strategy: Queue::Memory)
+    end
 
     let(:start_spy) { spy('start') }
     let(:stop_spy) { spy('stop') }

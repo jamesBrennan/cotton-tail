@@ -13,6 +13,11 @@ RabbitAPI = Class.new do
     def_delegators :client, :delete_queue, :list_queue_bindings, :queue_info
     def_delegators :exchange, :publish
 
+    def bunny
+      @bunny ||= Bunny.new(automatically_recover: false, connection_timeout: 10)
+                      .tap(&:start)
+    end
+
     private
 
     def client
@@ -21,11 +26,6 @@ RabbitAPI = Class.new do
 
     def url
       @url ||= ENV.fetch('AMQP_MANAGER_URL', DEFAULT_URL)
-    end
-
-    def bunny
-      @bunny ||= Bunny.new(automatically_recover: false, connection_timeout: 3)
-                      .tap(&:start)
     end
 
     def channel
@@ -69,5 +69,9 @@ RSpec.shared_context 'rabbitmq_api', shared_context: :metadata do
 
   def publish(*args, **kwargs)
     RabbitAPI.publish(*args, **kwargs)
+  end
+
+  def connection
+    RabbitAPI.bunny
   end
 end

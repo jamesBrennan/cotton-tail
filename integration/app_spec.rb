@@ -78,11 +78,6 @@ module CottonTail
         expect(nested_handler).to have_received(:call)
         expect(top_level_handler).to have_received(:call)
       end
-
-      describe 'requiring acknowledgement' do
-        it 'provides ack and nack' do
-        end
-      end
     end
   end
 end
