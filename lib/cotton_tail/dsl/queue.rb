@@ -20,8 +20,6 @@ module CottonTail
         topic.instance_eval(&block)
       end
 
-      private
-
       def bind(key)
         return unless @queue.respond_to?(:bind)
 

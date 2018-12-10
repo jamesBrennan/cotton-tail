@@ -19,19 +19,33 @@ module CottonTail
 
     describe 'declaring queues' do
       it 'creates queue if it does not exist' do
-        app.define { queue queue_name }
+        app.routes.draw { queue queue_name }
 
         expect(queue_name).to exist_on_server
       end
     end
 
-    describe 'amqp bindings' do
+    describe 'queue bindings' do
       it 'creates a binding for each handled route' do
         routing_key = 'some.topic.routing.key'
 
-        app.define do
+        app.routes.draw do
           queue queue_name do
             handle routing_key, null_handler
+          end
+        end
+
+        expect(queue_name).to have_bindings(routing_key)
+      end
+    end
+
+    describe 'binding without a handler' do
+      it 'is created with the "bind" method' do
+        routing_key = 'an.unhandled.binding'
+
+        app.routes.draw do
+          queue queue_name do
+            bind routing_key
           end
         end
 
@@ -44,7 +58,7 @@ module CottonTail
         nested_handler = spy('topic handler')
         top_level_handler = spy('top level handler')
 
-        app.define do
+        app.routes.draw do
           queue queue_name do
             topic 'some.topic' do
               handle 'work', nested_handler
@@ -54,51 +68,19 @@ module CottonTail
           end
         end
 
-        queue = app.queue(queue_name)
-        queue.push %w[some.topic.work nested-message]
-        queue.push %w[work top-level-message]
+        publish('nested-message', routing_key: 'some.topic.work')
+        publish('top-level-message', routing_key: 'work')
+
+        sleep 0.01
+
         app.run
 
-        expect(nested_handler).to have_received(:call).with(
-          anything, anything, 'nested-message'
-        )
-
-        expect(top_level_handler).to have_received(:call).with(
-          anything, anything, 'top-level-message'
-        )
+        expect(nested_handler).to have_received(:call)
+        expect(top_level_handler).to have_received(:call)
       end
 
       describe 'requiring acknowledgement' do
-        it 'provides ack and nack through a Queue::Connection, passed with the :conn keyword' do
-          AckHandler = Class.new do
-            def self.call(delivery_info, _properties, _message, **kwargs)
-              conn = kwargs.fetch(:conn)
-              conn.ack(delivery_info[:delivery_tag])
-            end
-          end
-
-          NackHandler = Class.new do
-            def self.call(delivery_info, _props, _msg, **kwargs)
-              conn = kwargs.fetch(:conn)
-              conn.nack(delivery_info[:delivery_tag])
-            end
-          end
-
-          conn = Queue::Connection.new
-          expect(conn).to receive(:ack).and_call_original
-          expect(conn).to receive(:nack).and_call_original
-
-          app.define do
-            queue queue_name, conn: conn, manual_ack: true do
-              handle 'must.ack', AckHandler
-              handle 'must.nack', NackHandler
-            end
-          end
-
-          queue = app.queue(queue_name)
-          queue.push %w[must.ack some-message]
-          queue.push %w[must.nack some-message]
-          app.run
+        it 'provides ack and nack' do
         end
       end
     end

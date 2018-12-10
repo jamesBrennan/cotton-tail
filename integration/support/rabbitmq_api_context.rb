@@ -11,6 +11,7 @@ RabbitAPI = Class.new do
     extend Forwardable
 
     def_delegators :client, :delete_queue, :list_queue_bindings, :queue_info
+    def_delegators :exchange, :publish
 
     private
 
@@ -20,6 +21,18 @@ RabbitAPI = Class.new do
 
     def url
       @url ||= ENV.fetch('AMQP_MANAGER_URL', DEFAULT_URL)
+    end
+
+    def bunny
+      @bunny ||= Bunny.new.tap(&:start)
+    end
+
+    def channel
+      @channel ||= bunny.create_channel
+    end
+
+    def exchange
+      @exchange ||= channel.exchange('amq.topic')
     end
   end
 end
@@ -47,9 +60,13 @@ RSpec.shared_context 'rabbitmq_api', shared_context: :metadata do
     queues.each { |name| delete_queue name }
   end
 
-  def delete_queue(name)
+  def delete_queue(name, log = false)
     RabbitAPI.delete_queue('/', name)
   rescue Faraday::ResourceNotFound
-    warn "Delete queue skipped: Queue '#{name}' does not exist"
+    warn "Delete queue skipped: Queue '#{name}' does not exist" if log
+  end
+
+  def publish(*args, **kwargs)
+    RabbitAPI.publish(*args, **kwargs)
   end
 end
