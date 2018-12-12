@@ -9,6 +9,7 @@ module CottonTail
   autoload :DSL, 'cotton_tail/dsl'
   autoload :Middleware, 'cotton_tail/middleware'
   autoload :Queue, 'cotton_tail/queue'
+  autoload :Route, 'cotton_tail/route'
   autoload :Router, 'cotton_tail/router'
   autoload :Version, 'cotton_tail/version'
 
@@ -27,6 +28,9 @@ module CottonTail
   end
 
   Response = Struct.new(:body)
+
+  class RouteConflictError < StandardError
+  end
 
   class UndefinedRouteError < StandardError
   end
