@@ -43,7 +43,7 @@ module CottonTail
 
       def handle(key, handler = nil, &block)
         handler ||= block
-        handlers[key] = handler
+        handlers[Route.new(key)] = handler
       end
 
       def handlers

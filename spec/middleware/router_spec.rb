@@ -21,7 +21,8 @@ module CottonTail
         context 'when a route is defined' do
           let(:routing_key) { 'my.test.route' }
           let(:handler) { double('handler') }
-          let(:route_handlers) { Hash[routing_key, handler] }
+          let(:route) { Route.new(routing_key) }
+          let(:route_handlers) { Hash[route, handler] }
 
           it 'calls the handler' do
             expect(handler).to receive(:call).with(message) { 'return val' }
@@ -30,6 +31,24 @@ module CottonTail
             )
 
             router.call(message)
+          end
+        end
+
+        context 'when multiple routes are defined' do
+          let(:wildcard_handler) { double('wildcard handler', call: 'wildcard') }
+          let(:exact_handler) { double('exact handler', call: 'exact') }
+
+          let(:route_handlers) do
+            Hash[
+              Route.new('a.b.*'), wildcard_handler,
+              Route.new('a.b.c'), exact_handler
+            ]
+          end
+
+          let(:routing_key) { 'a.b.c' }
+
+          it 'raises a RouteConflictError' do
+            expect { router.call(message) }.to raise_error(RouteConflictError)
           end
         end
 

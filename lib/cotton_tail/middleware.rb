@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'middleware'
-require 'logger'
 
 module CottonTail
   # Top level namespace for Middleware

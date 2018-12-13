@@ -78,6 +78,33 @@ module CottonTail
         expect(nested_handler).to have_received(:call)
         expect(top_level_handler).to have_received(:call)
       end
+
+      it 'routes messages to topics with wildcards' do
+        wildcard_handler = spy('wildcard handler')
+        query_handler = spy('query handler')
+
+        app.routes.draw do
+          queue queue_name do
+            topic 'some.topic' do
+              handle 'event.*', wildcard_handler
+            end
+
+            handle '#.query.*', query_handler
+          end
+        end
+
+        publish('wildcard message', routing_key: 'some.topic.event.started')
+        publish('wildcard message', routing_key: 'some.topic.event.finished')
+        publish('query 1', routing_key: 'some.topic.query.run')
+        publish('query 2', routing_key: 'query.run')
+
+        sleep 0.01
+
+        app.run
+
+        expect(wildcard_handler).to have_received(:call).exactly(2).times
+        expect(query_handler).to have_received(:call).exactly(2).times
+      end
     end
   end
 end
