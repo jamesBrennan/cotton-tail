@@ -10,6 +10,7 @@ module CottonTail
   autoload :Middleware, 'cotton_tail/middleware'
   autoload :Queue, 'cotton_tail/queue'
   autoload :Route, 'cotton_tail/route'
+  autoload :RouteSegment, 'cotton_tail/route_segment'
   autoload :Router, 'cotton_tail/router'
   autoload :Version, 'cotton_tail/version'
 

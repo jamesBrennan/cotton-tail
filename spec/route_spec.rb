@@ -66,5 +66,31 @@ module CottonTail
         end
       end
     end
+
+    describe '.wildcard_names' do
+      subject { route.wildcard_names }
+
+      context 'given an exchange_type: :topic' do
+        let(:opts) { { exchange_type: :topic } }
+
+        context 'given a pattern that is all wildcards' do
+          let(:pattern) { '*:domain.*:resource.*:action' }
+
+          it { is_expected.to contain_exactly('domain', 'resource', 'action') }
+
+          it 'matches as expected' do
+            expect(route.match? 'company.users.create').to be true
+            expect(route.match? 'company.users.create.friend').to be false
+            expect(route.match? 'company.users').to be false
+          end
+        end
+
+        context 'given a pattern this with some wildcards' do
+          let(:pattern) { 'my-domain.*:resource.*:action' }
+
+          it { is_expected.to contain_exactly('resource', 'action') }
+        end
+      end
+    end
   end
 end

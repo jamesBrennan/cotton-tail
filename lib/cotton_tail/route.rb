@@ -19,18 +19,26 @@ module CottonTail
       @pattern
     end
 
+    def wildcard_names
+      regex.names
+    end
+
     private
 
     def regex
       @regex ||= Regexp.new build_regex(@pattern)
     end
 
+    def regex_def(pattern)
+      segments(pattern).map(&:to_regex).join('\.')
+    end
+
+    def segments(pattern)
+      pattern.split('.').map(&RouteSegment.method(:new))
+    end
+
     def build_regex(pattern)
-      [
-        '^',
-        pattern.gsub('*', '([^.]+)').gsub(/\.?#\.?/, '([^.]{0,}\.?)+'),
-        '$'
-      ].join
+      ['^', regex_def(pattern), '$'].join
     end
   end
 end
