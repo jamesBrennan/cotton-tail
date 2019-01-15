@@ -11,9 +11,10 @@ module CottonTail
 
       describe 'push and pulling' do
         let(:routing_key) { 'some.routing.key' }
+        let(:delivery_info) { instance_double(::Bunny::DeliveryInfo, routing_key: routing_key) }
 
         it 'works as expected' do
-          queue.push CottonTail::Request.new({ routing_key: routing_key }, {}, 'hello')
+          queue.push CottonTail::Request.new(delivery_info, {}, 'hello')
 
           message = queue.pop
           expect(message).to be_a Request

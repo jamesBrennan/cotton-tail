@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 def build_request(routing_key, payload)
-  CottonTail::Request.new({ routing_key: routing_key }, {}, payload)
+  delivery_info = OpenStruct.new(routing_key: routing_key)
+  CottonTail::Request.new(delivery_info, {}, payload)
 end
 
 module CottonTail

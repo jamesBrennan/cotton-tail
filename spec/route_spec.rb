@@ -67,8 +67,8 @@ module CottonTail
       end
     end
 
-    describe '.wildcard_names' do
-      subject { route.wildcard_names }
+    describe '.names' do
+      subject { route.names }
 
       context 'given an exchange_type: :topic' do
         let(:opts) { { exchange_type: :topic } }
@@ -95,6 +95,58 @@ module CottonTail
           let(:pattern) { 'my-domain.*:resource.*:action' }
 
           it { is_expected.to contain_exactly('resource', 'action') }
+        end
+      end
+    end
+
+    describe '.extract_params' do
+      subject { route.extract_params routing_key }
+
+      context 'given an exchange_type: :topic' do
+        let(:opts) { { exchange_type: :topic } }
+
+        context 'given a pattern that is all single wildcards' do
+          let(:pattern) { '*:domain.*:resource.*:action' }
+
+          context 'and a matching routing key' do
+            let(:routing_key) { 'company.users.create' }
+
+            it do
+              is_expected.to(
+                match('domain' => 'company', 'resource' => 'users', 'action' => 'create')
+              )
+            end
+          end
+        end
+
+        context 'given a pattern that is mixed wildcards' do
+          let(:pattern) { '*:domain.#:resource.*:action' }
+
+          context 'and a matching routing key' do
+            let(:routing_key) { 'company.users.create' }
+
+            it do
+              is_expected.to(
+                match('domain' => 'company', 'resource' => 'users', 'action' => 'create')
+              )
+            end
+          end
+
+          context 'and a routing key that matches the extended wildcard' do
+            let(:routing_key) { 'company.users.matched.list' }
+            it do
+              is_expected.to(
+                match('domain' => 'company', 'resource' => 'users.matched', 'action' => 'list')
+              )
+            end
+          end
+        end
+
+        context 'given a pattern without wildcards' do
+          let(:pattern) { 'company.users.create' }
+          let(:routing_key) { pattern }
+
+          it { is_expected.to be_empty }
         end
       end
     end
