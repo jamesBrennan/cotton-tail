@@ -73,16 +73,22 @@ module CottonTail
       context 'given an exchange_type: :topic' do
         let(:opts) { { exchange_type: :topic } }
 
-        context 'given a pattern that is all wildcards' do
+        context 'given a pattern that is all single wildcards' do
           let(:pattern) { '*:domain.*:resource.*:action' }
 
           it { is_expected.to contain_exactly('domain', 'resource', 'action') }
 
           it 'matches as expected' do
-            expect(route.match? 'company.users.create').to be true
-            expect(route.match? 'company.users.create.friend').to be false
-            expect(route.match? 'company.users').to be false
+            expect(route.match?('company.users.create')).to be true
+            expect(route.match?('company.users.create.friend')).to be false
+            expect(route.match?('company.users')).to be false
           end
+        end
+
+        context 'given a pattern with mixed wildcards' do
+          let(:pattern) { '*:domain.#:resource_path.describe' }
+
+          it { is_expected.to contain_exactly('domain', 'resource_path') }
         end
 
         context 'given a pattern this with some wildcards' do

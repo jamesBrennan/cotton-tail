@@ -18,7 +18,7 @@ module CottonTail
     end
 
     def replace_named_captures(pattern)
-      pattern.gsub(/\*:(\w+)/, '(?<\1>[^.]+)')
+      pattern.gsub(/[*#]:(\w+)/, '(?<\1>[^.]+)')
     end
 
     def replace_single_wildcard(pattern)
