@@ -4,7 +4,8 @@ module CottonTail
   # Route pattern matcher
   class Route < SimpleDelegator
     def initialize(pattern)
-      super build_regex(pattern)
+      @pattern = pattern
+      super build_regex
     end
 
     def extract_params(routing_key)
@@ -13,17 +14,25 @@ module CottonTail
       match(routing_key).named_captures
     end
 
+    def binding
+      segments.map(&:binding).join('.')
+    end
+
     private
 
-    def explode(pattern)
-      pattern.split('.')
+    def explode
+      @pattern.split('.').map(&RouteSegment.method(:new))
     end
 
-    def collapse(segments)
-      segments.zip(separators(segments)).join
+    def collapse
+      segments.zip(separators).join
     end
 
-    def separators(segments)
+    def segments
+      @segments ||= explode
+    end
+
+    def separators
       separators = segments.each_with_index.map do |segment, idx|
         [Regexp.escape('.')].tap do |sep|
           sep << '?' if segment.hash? && idx.zero?
@@ -32,16 +41,8 @@ module CottonTail
       separators.map(&:join)[0..-2]
     end
 
-    def definition(pattern)
-      collapse segments(pattern)
-    end
-
-    def segments(pattern)
-      explode(pattern).map(&RouteSegment.method(:new))
-    end
-
-    def build_regex(pattern)
-      Regexp.new "^#{definition(pattern)}$"
+    def build_regex
+      Regexp.new "^#{collapse}$"
     end
   end
 end

@@ -8,6 +8,7 @@ module CottonTail
       watch_start = start_handler
       watch_top = top_handler
       watch_other = other_handler
+      watch_named = named_handler
 
       app.routes.draw do
         queue 'my_app_inbox', exclusive: true do
@@ -20,6 +21,8 @@ module CottonTail
           handle 'long.running.task' do
             sleep 1
           end
+
+          handle 'my-service.*:resource.*:action', watch_named
         end
 
         queue 'another_queue', exclusive: true do
@@ -34,18 +37,11 @@ module CottonTail
 
     let(:start_handler) { double('start') }
     let(:top_handler) { double('start') }
-    let(:stop_handler) { double('stop') }
+    let(:named_handler) { double('named') }
     let(:other_handler) { double('other') }
 
     it 'runs without errors' do
       expect(app).to be_truthy
-    end
-
-    before do
-      allow(start_handler).to receive(:call)
-      allow(top_handler).to receive(:call)
-      allow(stop_handler).to receive(:call)
-      allow(other_handler).to receive(:call)
     end
 
     describe 'configuring message queues' do
@@ -77,14 +73,19 @@ module CottonTail
         start_request = build_request('some.topic.prefix.job.start', 'hello!')
         top_request = build_request('some.top-level.event.happened', 'something happened')
         other_request = build_request('another.routing.key', 'hello also')
+        named_request = build_request(
+          'my-service.user.add', 'added', route_params: { 'resource' => 'user', 'action' => 'add' }
+        )
 
         queue.push start_request
         queue.push top_request
+        queue.push named_request
         other_queue.push other_request
 
         expect(start_handler).to receive(:call).with([env, start_request, Response])
         expect(top_handler).to receive(:call).with([env, top_request, Response])
         expect(other_handler).to receive(:call).with([env, other_request, Response])
+        expect(named_handler).to receive(:call).with([env, named_request, Response])
 
         app.run
       end
@@ -98,6 +99,11 @@ module CottonTail
           m.use ->((_env, request, _response)) { request.payload.upcase }
           m.use middleware_end_handler
         end
+
+        allow(start_handler).to receive(:call)
+        allow(top_handler).to receive(:call)
+        allow(named_handler).to receive(:call)
+        allow(other_handler).to receive(:call)
       end
 
       let(:queue) { app.queue('my_app_inbox') }
@@ -116,8 +122,8 @@ module CottonTail
   end
 end
 
-def build_request(routing_key, payload)
+def build_request(routing_key, payload, route_params: {})
   delivery_info = OpenStruct.new(routing_key: routing_key)
-  properties = CottonTail::MessageProperties.new(route_params: {})
+  properties = CottonTail::MessageProperties.new(route_params: route_params)
   CottonTail::Request.new(delivery_info, properties, payload)
 end

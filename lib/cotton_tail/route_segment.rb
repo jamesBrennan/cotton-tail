@@ -16,6 +16,14 @@ module CottonTail
       /^#{HASH}|#{NAMED_HASH}$/.match? @value
     end
 
+    def binding
+      return '*' if star?
+
+      return '#' if hash?
+
+      @value
+    end
+
     private
 
     TRANSFORM = ->(val, func) { func.call(val) }

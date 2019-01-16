@@ -35,7 +35,7 @@ module CottonTail
       end
 
       def bind(routing_key)
-        source.bind('amq.topic', routing_key: routing_key)
+        source.bind('amq.topic', routing_key: Route.new(routing_key).binding)
       end
 
       private

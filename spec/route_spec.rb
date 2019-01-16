@@ -101,6 +101,38 @@ module CottonTail
       end
     end
 
+    describe '.binding' do
+      subject { route.binding }
+
+      context 'given an exchange_type: :topic' do
+        let(:opts) { { exchange_type: :topic } }
+
+        context 'given a pattern that is all single wildcards' do
+          let(:pattern) { '*:domain.*:resource.*:action' }
+
+          it { is_expected.to eql('*.*.*') }
+        end
+
+        context 'given a pattern that is mixed wildcards' do
+          let(:pattern) { '*:domain.#:resource.*:action' }
+
+          it { is_expected.to eql('*.#.*') }
+        end
+
+        context 'given mixed literals and wildcards' do
+          let(:pattern) { 'company.*:resource.#' }
+
+          it { is_expected.to eql('company.*.#') }
+        end
+
+        context 'given a simple string' do
+          let(:pattern) { 'company.users.add' }
+
+          it { is_expected.to eql pattern }
+        end
+      end
+    end
+
     describe '.extract_params' do
       subject { route.extract_params routing_key }
 

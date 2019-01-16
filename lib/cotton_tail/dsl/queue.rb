@@ -10,9 +10,9 @@ module CottonTail
         @context = context
       end
 
-      def handle(key, handler = nil, &block)
-        bind(key)
-        @context.handle(key, handler, &block)
+      def handle(pattern, handler = nil, &block)
+        bind pattern
+        @context.handle(pattern, handler, &block)
       end
 
       def topic(routing_prefix, &block)
@@ -20,10 +20,10 @@ module CottonTail
         topic.instance_eval(&block)
       end
 
-      def bind(key)
+      def bind(pattern)
         return unless @queue.respond_to?(:bind)
 
-        @queue.bind key
+        @queue.bind pattern
       end
     end
   end
