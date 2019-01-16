@@ -19,8 +19,21 @@ module CottonTail
       pattern.split('.')
     end
 
+    def collapse(segments)
+      segments.zip(separators(segments)).join
+    end
+
+    def separators(segments)
+      separators = segments.each_with_index.map do |segment, idx|
+        [Regexp.escape('.')].tap do |sep|
+          sep << '?' if segment.hash? && idx.zero?
+        end
+      end
+      separators.map(&:join)[0..-2]
+    end
+
     def definition(pattern)
-      segments(pattern).join Regexp.escape('.')
+      collapse segments(pattern)
     end
 
     def segments(pattern)

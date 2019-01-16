@@ -1,42 +1,21 @@
 # frozen_string_literal: true
 
-def build_request(routing_key, payload)
-  delivery_info = OpenStruct.new(routing_key: routing_key)
-  CottonTail::Request.new(delivery_info, {}, payload)
-end
-
 module CottonTail
   describe 'Defining a CottonTail App' do
     include_context 'rabbitmq_api'
 
-    WorkerSpy = Class.new do
-      attr_reader :calls
-
-      def initialize
-        @calls = []
-      end
-
-      def call(args)
-        args.tap { @calls << args }
-      end
-
-      def reset
-        @calls = []
-      end
-    end
-
-    StartSpy = WorkerSpy.new
-    TopSpy = WorkerSpy.new
-    OtherSpy = WorkerSpy.new
-
     before do
+      watch_start = start_handler
+      watch_top = top_handler
+      watch_other = other_handler
+
       app.routes.draw do
         queue 'my_app_inbox', exclusive: true do
           topic 'some.topic.prefix' do
-            handle 'job.start', StartSpy
+            handle 'job.start', watch_start
           end
 
-          handle 'some.top-level.event.happened', TopSpy
+          handle 'some.top-level.event.happened', watch_top
 
           handle 'long.running.task' do
             sleep 1
@@ -44,7 +23,7 @@ module CottonTail
         end
 
         queue 'another_queue', exclusive: true do
-          handle 'another.routing.key', OtherSpy
+          handle 'another.routing.key', watch_other
         end
       end
     end
@@ -53,17 +32,20 @@ module CottonTail
       CottonTail::App.new(connection: connection, queue_strategy: Queue::Memory)
     end
 
-    let(:start_spy) { spy('start') }
-    let(:stop_spy) { spy('stop') }
+    let(:start_handler) { double('start') }
+    let(:top_handler) { double('start') }
+    let(:stop_handler) { double('stop') }
+    let(:other_handler) { double('other') }
 
     it 'runs without errors' do
       expect(app).to be_truthy
     end
 
     before do
-      StartSpy.reset
-      TopSpy.reset
-      OtherSpy.reset
+      allow(start_handler).to receive(:call)
+      allow(top_handler).to receive(:call)
+      allow(stop_handler).to receive(:call)
+      allow(other_handler).to receive(:call)
     end
 
     describe 'configuring message queues' do
@@ -100,29 +82,21 @@ module CottonTail
         queue.push top_request
         other_queue.push other_request
 
+        expect(start_handler).to receive(:call).with([env, start_request, Response])
+        expect(top_handler).to receive(:call).with([env, top_request, Response])
+        expect(other_handler).to receive(:call).with([env, other_request, Response])
+
         app.run
-
-        expect(StartSpy.calls).to(
-          match([[env, start_request, anything]])
-        )
-
-        expect(TopSpy.calls).to(
-          match([[env, top_request, anything]])
-        )
-
-        expect(OtherSpy.calls).to(
-          match([[env, other_request, anything]])
-        )
       end
     end
 
     describe 'using middleware' do
-      let(:middleware_end_spy) { spy('middleware_end') }
+      let(:middleware_end_handler) { spy('middleware_end') }
 
       before do
         app.config.middleware do |m|
           m.use ->((_env, request, _response)) { request.payload.upcase }
-          m.use middleware_end_spy
+          m.use middleware_end_handler
         end
       end
 
@@ -131,7 +105,7 @@ module CottonTail
       let(:request) { build_request(routing_key, 'hello!') }
 
       it 'Applies the middleware' do
-        expect(middleware_end_spy).to(
+        expect(middleware_end_handler).to(
           receive(:call).with('HELLO!')
         )
 
@@ -140,4 +114,10 @@ module CottonTail
       end
     end
   end
+end
+
+def build_request(routing_key, payload)
+  delivery_info = OpenStruct.new(routing_key: routing_key)
+  properties = CottonTail::MessageProperties.new(route_params: {})
+  CottonTail::Request.new(delivery_info, properties, payload)
 end

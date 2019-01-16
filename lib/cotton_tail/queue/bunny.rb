@@ -30,7 +30,8 @@ module CottonTail
       end
 
       def pop
-        Request.new(*super)
+        delivery_info, properties, payload = super
+        Request.new(delivery_info, MessageProperties.new(properties.to_h), payload)
       end
 
       def bind(routing_key)

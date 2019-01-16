@@ -7,26 +7,14 @@ module CottonTail
   autoload :App, 'cotton_tail/app'
   autoload :Configuration, 'cotton_tail/configuration'
   autoload :DSL, 'cotton_tail/dsl'
+  autoload :MessageProperties, 'cotton_tail/message_properties'
   autoload :Middleware, 'cotton_tail/middleware'
   autoload :Queue, 'cotton_tail/queue'
+  autoload :Request, 'cotton_tail/request'
   autoload :Route, 'cotton_tail/route'
   autoload :RouteSegment, 'cotton_tail/route_segment'
   autoload :Router, 'cotton_tail/router'
   autoload :Version, 'cotton_tail/version'
-
-  Request = Struct.new(:delivery_info, :properties, :payload) do
-    def routing_key
-      delivery_info[:routing_key]
-    end
-
-    def delivery_tag
-      delivery_info[:delivery_tag]
-    end
-
-    def channel
-      delivery_info[:channel]
-    end
-  end
 
   Response = Struct.new(:body)
 

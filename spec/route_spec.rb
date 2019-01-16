@@ -59,6 +59,8 @@ module CottonTail
             it 'behaves as expected' do
               expect(route.match?('c.d')).to be true
               expect(route.match?('a.b.c.d')).to be true
+              expect(route.match?('d')).to be true
+
               expect(route.match?('d.e')).to be false
               expect(route.match?('a.b.c')).to be false
             end

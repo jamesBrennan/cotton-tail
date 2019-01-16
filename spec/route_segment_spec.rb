@@ -4,6 +4,44 @@ module CottonTail
   describe RouteSegment do
     subject(:segment) { described_class.new(definition) }
 
+    describe '.star?' do
+      subject { segment.star? }
+
+      context 'given "*"' do
+        let(:definition) { '*' }
+        it { is_expected.to be true }
+      end
+
+      context 'given "*:named"' do
+        let(:definition) { '*:named' }
+        it { is_expected.to be true }
+      end
+
+      context 'given anything else' do
+        let(:definition) { 'hel*o' }
+        it { is_expected.to be false }
+      end
+    end
+
+    describe '.hash?' do
+      subject { segment.hash? }
+
+      context 'given "#"' do
+        let(:definition) { '#' }
+        it { is_expected.to be true }
+      end
+
+      context 'given "#:named"' do
+        let(:definition) { '#:named' }
+        it { is_expected.to be true }
+      end
+
+      context 'given anything else' do
+        let(:definition) { 'hel#o' }
+        it { is_expected.to be false }
+      end
+    end
+
     describe '.match?' do
       context 'given a string definition' do
         let(:definition) { 'some-string' }
