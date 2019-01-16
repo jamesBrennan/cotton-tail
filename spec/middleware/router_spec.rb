@@ -7,10 +7,11 @@ module CottonTail
       subject(:router) { described_class.new(app, handlers: route_handlers) }
 
       let(:env) { Hash[] }
-      let(:request) { CottonTail::Request.new(delivery_info, {}, payload) }
+      let(:request) { CottonTail::Request.new(delivery_info, properties, payload) }
+      let(:properties) { MessageProperties.new({}) }
       let(:response) { CottonTail::Response.new }
 
-      let(:delivery_info) { { routing_key: routing_key } }
+      let(:delivery_info) { instance_double(Bunny::DeliveryInfo, routing_key: routing_key) }
       let(:message) { [env, request, response] }
 
       let(:app) { double('middleware app') }
@@ -24,12 +25,19 @@ module CottonTail
           let(:route) { Route.new(routing_key) }
           let(:route_handlers) { Hash[route, handler] }
 
-          it 'calls the handler' do
-            expect(handler).to receive(:call).with(message) { 'return val' }
-            expect(app).to(
-              receive(:call).with([env, request, Response.new('return val')])
-            )
+          it 'calls the handler and then calls app with the handler response' do
+            expect(handler).to receive(:call) do |handler_env, handler_req, handler_res|
+              expect(handler_env).to eql env
+              expect(handler_req).to be_a Request
+              expect(handler_res).to eql response
+              'return val'
+            end
 
+            expect(app).to receive(:call) do |next_env, next_req, next_res|
+              expect(next_env).to eql env
+              expect(next_req).to eql request
+              expect(next_res).to match(Response.new('return val'))
+            end
             router.call(message)
           end
         end
@@ -58,6 +66,43 @@ module CottonTail
 
           it 'raises an error' do
             expect { router.call(message) }.to raise_error(UndefinedRouteError)
+          end
+        end
+      end
+
+      describe 'parsing route params' do
+        let(:payload) { 'payload' }
+
+        let(:route_definition) { '*:domain.*:resource.*:action' }
+        let(:routing_key) { 'company.user.add' }
+        let(:handler) { double('handler') }
+        let(:route) { Route.new(route_definition) }
+        let(:route_handlers) { Hash[route, handler] }
+
+        before { allow(app).to receive(:call) }
+
+        it 'calls the handler' do
+          route_params = {
+            'domain' => 'company',
+            'resource' => 'user',
+            'action' => 'add'
+          }
+
+          expect(handler).to receive(:call) do |_env, req, _res|
+            expect(req.route_params).to match(route_params)
+          end
+
+          router.call(message)
+        end
+
+        context 'given a group wildcard at the beginning of a route' do
+          let(:route_definition) { '#.*:resource.*:action' }
+          let(:routing_key) { 'user.add' }
+
+          it 'routes correctly' do
+            expect(handler).to receive(:call)
+
+            router.call(message)
           end
         end
       end

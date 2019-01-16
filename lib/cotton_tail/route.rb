@@ -1,36 +1,48 @@
 # frozen_string_literal: true
 
 module CottonTail
-  # Route value object
-  class Route
-    attr_reader :pattern
-
+  # Route pattern matcher
+  class Route < SimpleDelegator
     def initialize(pattern)
       @pattern = pattern
+      super build_regex
     end
 
-    def match?(routing_key)
-      return true if @pattern == routing_key
+    def extract_params(routing_key)
+      return {} unless match? routing_key
 
-      regex.match? routing_key
+      match(routing_key).named_captures
     end
 
-    def to_s
-      @pattern
+    def binding
+      segments.map(&:binding).join('.')
     end
 
     private
 
-    def regex
-      @regex ||= Regexp.new build_regex(@pattern)
+    def explode
+      @pattern.split('.').map(&RouteSegment.method(:new))
     end
 
-    def build_regex(pattern)
-      [
-        '^',
-        pattern.gsub('*', '([^.]+)').gsub(/\.?#\.?/, '([^.]{0,}\.?)+'),
-        '$'
-      ].join
+    def collapse
+      segments.zip(separators).join
+    end
+
+    def segments
+      @segments ||= explode
+    end
+
+    def separators
+      separators = segments.each_with_index.map do |segment, idx|
+        [Regexp.escape('.')].tap do |sep|
+          sep << '?' if segment.hash? && idx.zero?
+        end
+      end
+      separators.map(&:join)[0..-2]
+    end
+
+    def build_regex
+      Regexp.new "^#{collapse}$"
     end
   end
 end

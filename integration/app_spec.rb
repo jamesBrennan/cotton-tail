@@ -27,15 +27,26 @@ module CottonTail
 
     describe 'queue bindings' do
       it 'creates a binding for each handled route' do
-        routing_key = 'some.topic.routing.key'
+        pattern = 'some.topic.routing.key'
 
         app.routes.draw do
           queue queue_name do
-            handle routing_key, null_handler
+            handle pattern, null_handler
           end
         end
 
-        expect(queue_name).to have_bindings(routing_key)
+        expect(queue_name).to have_bindings(pattern)
+      end
+
+      it 'binds named wildcards correctly' do
+        app.routes.draw do
+          queue queue_name do
+            handle '*:a.*:b.*:c', null_handler
+            handle 'domain.#:resources.fetch', null_handler
+          end
+        end
+
+        expect(queue_name).to have_bindings('*.*.*', 'domain.#.fetch')
       end
     end
 

@@ -25,6 +25,11 @@ app.routes.draw do
       puts request: request
       puts response: response
     end
+
+    handle 'send.*:gift.to.*:name' do |_env, request, _response|
+      gift, name = request.route_params.values_at('gift', 'name')
+      puts "#{gift} sent to #{name}!"
+    end
   end
 
   queue 'require_ack_queue', exclusive: true, manual_ack: true do

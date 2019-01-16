@@ -30,11 +30,12 @@ module CottonTail
       end
 
       def pop
-        Request.new(*super)
+        delivery_info, properties, payload = super
+        Request.new(delivery_info, MessageProperties.new(properties.to_h), payload)
       end
 
       def bind(routing_key)
-        source.bind('amq.topic', routing_key: routing_key)
+        source.bind('amq.topic', routing_key: Route.new(routing_key).binding)
       end
 
       private
