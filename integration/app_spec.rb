@@ -64,6 +64,26 @@ module CottonTail
       end
     end
 
+    describe 'binding the same routing_key to different queues' do
+      it 'creates the bindings as expected' do
+        routing_key = 'a.b.c'
+        other_queue = "#{queue_name}_too"
+
+        app.routes.draw do
+          queue queue_name do
+            handle routing_key, null_handler
+          end
+
+          queue other_queue do
+            handle routing_key, null_handler
+          end
+        end
+
+        expect(queue_name).to have_bindings(routing_key)
+        expect(other_queue).to have_bindings(routing_key)
+      end
+    end
+
     describe 'handling messages' do
       it 'routes messages to the specified handlers' do
         nested_handler = spy('topic handler')
