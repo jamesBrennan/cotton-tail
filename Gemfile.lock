@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cotton-tail (0.6.1)
+    cotton-tail (0.7.0)
       bunny (~> 2.12)
       ibsciss-middleware (~> 0.4.2)
 
