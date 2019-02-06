@@ -50,23 +50,15 @@ module CottonTail
 
         its(:length) { is_expected.to be 2 }
 
-        it 'has members that are [name, instance] tuples' do
-          name, instance = queues.shift
-          expect(name).to eql 'my_app_inbox'
-          expect(instance).to be_an_instance_of(::Queue)
+        it 'has members that are queues' do
+          expect(queues).to all be_an_instance_of(::Queue)
         end
-      end
-
-      describe '.queue' do
-        subject { app.queue('my_app_inbox') }
-
-        it { is_expected.to be_an_instance_of(::Queue) }
       end
     end
 
     describe 'routing topic messages' do
-      let(:queue) { app.queue('my_app_inbox') }
-      let(:other_queue) { app.queue('another_queue') }
+      let(:queue) { app.queues.first }
+      let(:other_queue) { app.queues.last }
       let(:env) { app.env }
 
       it 'sends messages to the expected handler' do
@@ -106,7 +98,7 @@ module CottonTail
         allow(other_handler).to receive(:call)
       end
 
-      let(:queue) { app.queue('my_app_inbox') }
+      let(:queue) { app.queues.first }
       let(:routing_key) { 'some.topic.prefix.job.start' }
       let(:request) { build_request(routing_key, 'hello!') }
 

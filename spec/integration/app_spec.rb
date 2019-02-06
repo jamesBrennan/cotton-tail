@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'integration_helper'
-
 # Run specs against RabbitMQ server
 module CottonTail
   describe App do
@@ -48,6 +46,16 @@ module CottonTail
 
         expect(queue_name).to have_bindings('*.*.*', 'domain.#.fetch')
       end
+
+      context 'when called without a queue name' do
+        it 'runs without errors' do
+          app.routes.draw do
+            queue do
+              handle 'a.b.c', null_handler
+            end
+          end
+        end
+      end
     end
 
     describe 'binding without a handler' do
@@ -88,6 +96,7 @@ module CottonTail
       it 'routes messages to the specified handlers' do
         nested_handler = spy('topic handler')
         top_level_handler = spy('top level handler')
+        exclusive_handler = spy('exclusive handler')
 
         app.routes.draw do
           queue queue_name do
@@ -97,10 +106,15 @@ module CottonTail
 
             handle 'work', top_level_handler
           end
+
+          queue do
+            handle 'exclusive.work', exclusive_handler
+          end
         end
 
         publish('nested-message', routing_key: 'some.topic.work')
         publish('top-level-message', routing_key: 'work')
+        publish('exclusive-message', routing_key: 'exclusive.work')
 
         sleep 0.01
 
@@ -108,6 +122,7 @@ module CottonTail
 
         expect(nested_handler).to have_received(:call)
         expect(top_level_handler).to have_received(:call)
+        expect(exclusive_handler).to have_received(:call)
       end
 
       it 'routes messages to topics with wildcards' do

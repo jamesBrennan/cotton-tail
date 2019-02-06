@@ -19,11 +19,6 @@ module CottonTail
       routes.queues
     end
 
-    # Get a single message queue
-    def queue(name)
-      queues[name]
-    end
-
     # Start the app, process all pending messages, and then shutdown
     def run
       supervisors.map(&:run).each(&:join)
@@ -43,7 +38,7 @@ module CottonTail
     private
 
     def supervisors
-      @supervisors ||= queues.map do |_name, queue|
+      @supervisors ||= queues.map do |queue|
         Queue::Supervisor.new(queue, app: self)
       end
     end
