@@ -3,7 +3,7 @@
 require 'bundler/setup'
 require 'cotton_tail'
 require 'rspec'
-require 'support/rabbitmq_api_context'
+require 'integration/support/rabbitmq_api_context'
 require 'ostruct'
 
 RSpec.configure do |config|

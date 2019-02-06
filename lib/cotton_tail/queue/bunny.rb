@@ -8,8 +8,6 @@ module CottonTail
     # A wrapper around a ::Bunny::Queue that makes it interchangeable with a
     # standard Ruby Queue
     class Bunny < SimpleDelegator
-      extend Forwardable
-
       def self.call(**opts)
         new(**opts)
       end
@@ -17,9 +15,8 @@ module CottonTail
       def initialize(name:, connection:, manual_ack: false, **opts)
         super ::Queue.new
 
-        @name = name
-        @source_opts = opts
         @connection = connection
+        @source = build_source(name, opts)
 
         watch_source manual_ack
       end
@@ -40,14 +37,20 @@ module CottonTail
 
       private
 
-      attr_reader :connection
+      attr_reader :connection, :source
+
+      def nil_opts(opts)
+        { exclusive: true }.merge(opts)
+      end
 
       def watch_source(manual_ack)
         source.subscribe(manual_ack: manual_ack) { |*args| self << args }
       end
 
-      def source
-        @source ||= channel.queue(@name, **@source_opts)
+      def build_source(name, opts)
+        return channel.queue('', **nil_opts(opts)) if name.nil?
+
+        channel.queue(name, **opts)
       end
 
       def channel

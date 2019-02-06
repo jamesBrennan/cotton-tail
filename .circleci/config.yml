@@ -44,7 +44,7 @@ jobs:
           name: unit tests
           command: |
             mkdir /tmp/test-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+            TEST_FILES="$(circleci tests glob "spec/unit/**/*_spec.rb" | circleci tests split --split-by=timings)"
 
             bundle exec rspec --format progress \
                             --format RspecJunitFormatter \
@@ -55,7 +55,7 @@ jobs:
       - run:
           name: integration tests
           command: |
-            TEST_FILES="$(circleci tests glob "integration/**/*_spec.rb" | circleci tests split --split-by=timings)"
+            TEST_FILES="$(circleci tests glob "spec/integration/**/*_spec.rb" | circleci tests split --split-by=timings)"
 
             bundle exec rspec --format progress \
                             --format RspecJunitFormatter \

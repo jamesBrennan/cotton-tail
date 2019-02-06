@@ -10,7 +10,7 @@ module CottonTail
       def initialize(queue_strategy:, connection:)
         @queue_strategy = queue_strategy
         @connection = connection
-        @queues = {}
+        @queues = []
       end
 
       def draw(&block)
@@ -18,9 +18,9 @@ module CottonTail
       end
 
       # Define a new queue
-      def queue(name, **opts, &block)
+      def queue(name = '', **opts, &block)
         @queue_strategy.call(name: name, connection: @connection, **opts).tap do |queue_instance|
-          @queues[name] = queue_instance
+          @queues << queue_instance
           queue_dsl = Queue.new(name, queue_instance, self)
           queue_dsl.instance_eval(&block) if block_given?
         end
