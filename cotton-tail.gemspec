@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'debase', '0.2.3.beta5'
   spec.add_development_dependency 'rabbitmq_http_api_client', '~> 1.9'
-  spec.add_development_dependency 'rake', '~> 12.0'
+  spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rspec-benchmark', '~> 0.4'
   spec.add_development_dependency 'rspec-its', '~> 1.2'
