@@ -8,12 +8,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    amq-protocol (2.3.0)
+    amq-protocol (2.3.2)
     ast (2.4.0)
     benchmark-perf (0.4.0)
     benchmark-trend (0.2.0)
-    bunny (2.13.0)
-      amq-protocol (~> 2.3, >= 2.3.0)
+    bunny (2.20.0)
+      amq-protocol (~> 2.3, >= 2.3.1)
+      sorted_set (~> 1, >= 1.0.2)
     debase (0.2.3.beta5)
       debase-ruby_core_source (>= 0.10.2)
     debase-ruby_core_source (0.10.4)
@@ -38,6 +39,7 @@ GEM
       multi_json (~> 1.12)
     rainbow (3.0.0)
     rake (13.0.1)
+    rbtree (0.4.6)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
       rspec-expectations (~> 3.11.0)
@@ -71,6 +73,10 @@ GEM
     ruby-debug-ide (0.7.0.beta7)
       rake (>= 0.8.1)
     ruby-progressbar (1.10.0)
+    set (1.0.3)
+    sorted_set (1.0.3)
+      rbtree
+      set (~> 1.0)
     unicode-display_width (1.4.1)
 
 PLATFORMS
