@@ -18,7 +18,8 @@ module CottonTail
     # Extracts named parameters from a routing key if it matches the route pattern.
     #
     # @param routing_key [String] The routing key to match against the route pattern.
-    # @return [Hash{String => String}] A hash of named parameters extracted from the routing key, or an empty hash if there is no match.
+    # @return [Hash{String => String}] A hash of named parameters extracted from the routing key,
+    #         or an empty hash if there is no match.
     def extract_params(routing_key)
       return {} unless match? routing_key
 
