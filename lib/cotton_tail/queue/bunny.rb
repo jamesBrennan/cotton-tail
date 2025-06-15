@@ -13,6 +13,14 @@ module CottonTail
         new(**opts)
       end
 
+      ##
+      # Initializes a Bunny-backed queue that delegates to a Ruby Queue.
+      #
+      # Sets up the internal queue, establishes a Bunny queue source, and subscribes to incoming messages.
+      #
+      # @param name [String, nil] The name of the Bunny queue, or nil for an exclusive anonymous queue.
+      # @param manual_ack [Boolean] Whether to require manual message acknowledgment (default: false).
+      # @param opts [Hash] Additional options for Bunny queue creation.
       def initialize(name:, connection:, manual_ack: false, **opts)
         super(::Queue.new)
 

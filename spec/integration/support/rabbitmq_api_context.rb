@@ -18,14 +18,23 @@ RabbitAPI = Class.new do
 
     private
 
+    ##
+    # Lazily initializes and returns the RabbitMQ HTTP client instance.
+    #
+    # @return [RabbitMQ::HTTP::Client] The HTTP client for interacting with RabbitMQ management API.
     def client
       @client ||= RabbitMQ::HTTP::Client.new(url)
     end
 
+    # @return [String] The URL for the RabbitMQ management API.
     def url
       @url ||= ENV.fetch('AMQP_MANAGER_URL', 'http://guest:guest@localhost:15672')
     end
 
+    ##
+    # Returns a Bunny channel for interacting with RabbitMQ, initializing it if necessary.
+    #
+    # @return [Bunny::Channel] The Bunny channel instance
     def channel
       @channel ||= bunny.create_channel
     end
@@ -55,6 +64,10 @@ RSpec::Matchers.define :exist_on_server do
 end
 
 RSpec.shared_context 'with rabbitmq_api', shared_context: :metadata do
+  ##
+  # Deletes multiple RabbitMQ queues by name.
+  #
+  # @param queues [Array<String>] Names of the queues to delete
   def delete_queues(*queues)
     queues.each { |name| delete_queue name }
   end

@@ -120,6 +120,13 @@ end
 
 MockDeliveryInfo = Struct.new(:routing_key)
 
+##
+# Builds a CottonTail::Request with the specified routing key, payload, and optional route parameters.
+#
+# @param routing_key [String] The routing key for the message.
+# @param payload [Object] The message payload.
+# @param route_params [Hash] Optional route parameters to include in message properties.
+# @return [CottonTail::Request] The constructed request object.
 def build_request(routing_key, payload, route_params: {})
   delivery_info = MockDeliveryInfo.new(routing_key)
   properties = CottonTail::MessageProperties.new(route_params: route_params)

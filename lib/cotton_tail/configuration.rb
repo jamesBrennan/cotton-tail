@@ -17,7 +17,13 @@ module CottonTail
     # Sets the RabbitMQ connection params. Arguments are eventually passed
     # to Bunny.new. Any valid params for Bunny.new are accepted.
     #
+    ##
+    # Sets the connection arguments for RabbitMQ using the provided parameters.
+    #
+    # The parameters are processed through AMQ::Settings.configure and stored for later use.
+    #
     # @see http://rubybunny.info/articles/connecting.html
+    # @param params [Hash, String] Connection parameters or URI for RabbitMQ
     def connection_args=(params)
       @connection_args = AMQ::Settings.configure(params)
     end
