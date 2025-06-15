@@ -1,4 +1,5 @@
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 3.0.0
 
 Layout/LineLength:
@@ -28,6 +29,10 @@ Style/Documentation:
 
 Style/OptionalBooleanParameter:
   Enabled: false
+
+Style/SelectByRegexp:
+  Exclude:
+    - lib/cotton_tail/middleware/router.rb
 
 Gemspec/DevelopmentDependencies:
   Enabled: true

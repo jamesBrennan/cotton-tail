@@ -66,5 +66,7 @@ module CottonTail
     NAMED = /:(\w+)/
     NAMED_STAR = /#{STAR}#{NAMED}/
     NAMED_HASH = /#{HASH}#{NAMED}/
+
+    private_constant :TRANSFORM, :STAR, :HASH, :NAMED, :NAMED_STAR, :NAMED_HASH
   end
 end

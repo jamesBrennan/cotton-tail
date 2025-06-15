@@ -114,8 +114,10 @@ module CottonTail
   end
 end
 
+MockDeliveryInfo = Struct.new(:routing_key)
+
 def build_request(routing_key, payload, route_params: {})
-  delivery_info = OpenStruct.new(routing_key: routing_key)
+  delivery_info = MockDeliveryInfo.new(routing_key)
   properties = CottonTail::MessageProperties.new(route_params: route_params)
   CottonTail::Request.new(delivery_info, properties, payload)
 end
