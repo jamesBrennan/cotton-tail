@@ -12,7 +12,7 @@ module CottonTail
       subject { request.routing_key }
 
       before do
-        allow(delivery_info).to receive(:routing_key) { 'some-key' }
+        allow(delivery_info).to receive(:routing_key).and_return('some-key')
       end
 
       it { is_expected.to eql 'some-key' }
@@ -22,7 +22,7 @@ module CottonTail
       subject { request.delivery_tag }
 
       before do
-        allow(delivery_info).to receive(:delivery_tag) { 'some-tag' }
+        allow(delivery_info).to receive(:delivery_tag).and_return('some-tag')
       end
 
       it { is_expected.to eql 'some-tag' }
@@ -32,7 +32,7 @@ module CottonTail
       subject { request.channel }
 
       before do
-        allow(delivery_info).to receive(:channel) { 'some-channel' }
+        allow(delivery_info).to receive(:channel).and_return('some-channel')
       end
 
       it { is_expected.to eql 'some-channel' }

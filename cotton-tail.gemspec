@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
                           your services'
 
   spec.license       = 'MIT'
-
+  spec.required_ruby_version = '>= 3.0.0'
   spec.cert_chain  = ['certs/jamesbrennan.pem']
   spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem') if $PROGRAM_NAME.end_with? 'gem'
 
@@ -28,17 +28,18 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'bunny', '~> 2.12'
-  spec.add_dependency 'ibsciss-middleware', '~> 0.4.2'
+  spec.add_dependency 'bunny', '~> 2.24'
+  spec.add_dependency 'ibsciss-middleware', '~> 0.4.3'
 
-  spec.add_development_dependency 'bundler', '~> 1.16'
-  spec.add_development_dependency 'debase', '0.2.3.beta5'
-  spec.add_development_dependency 'rabbitmq_http_api_client', '~> 1.9'
-  spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rspec-benchmark', '~> 0.4'
-  spec.add_development_dependency 'rspec-its', '~> 1.2'
+  spec.add_development_dependency 'bundler', '~> 2.5'
+  spec.add_development_dependency 'rabbitmq_http_api_client', '~> 3.0'
+  spec.add_development_dependency 'rake', '~> 13.3'
+  spec.add_development_dependency 'rspec', '~> 3.13'
+  spec.add_development_dependency 'rspec-benchmark', '~> 0.6'
+  spec.add_development_dependency 'rspec-its', '~> 2.0'
   spec.add_development_dependency 'rspec_junit_formatter'
-  spec.add_development_dependency 'rubocop', '~> 0.60'
-  spec.add_development_dependency 'ruby-debug-ide', '0.7.0.beta7'
+  spec.add_development_dependency 'rubocop', '~> 1.76'
+  spec.add_development_dependency 'rubocop-rake', '~> 0.7.1'
+  spec.add_development_dependency 'rubocop-rspec', '~> 3.6'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end

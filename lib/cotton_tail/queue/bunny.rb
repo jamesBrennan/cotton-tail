@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'delegate'
 require 'forwardable'
 require 'bunny'
 
@@ -13,7 +14,7 @@ module CottonTail
       end
 
       def initialize(name:, connection:, manual_ack: false, **opts)
-        super ::Queue.new
+        super(::Queue.new)
 
         @connection = connection
         @source = build_source(name, opts)

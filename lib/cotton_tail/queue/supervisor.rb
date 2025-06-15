@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'fiber'
-
 module CottonTail
   module Queue
     # A supervisor for a single queue

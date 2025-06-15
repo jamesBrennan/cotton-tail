@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require 'delegate'
+
 module CottonTail
   # Route pattern matcher
   class Route < SimpleDelegator
     def initialize(pattern)
       @pattern = pattern
-      super build_regex
+      super(build_regex)
     end
 
     def extract_params(routing_key)

@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require 'delegate'
+
 module CottonTail
   # RouteSegment implements the pattern matching for route segments
   class RouteSegment < SimpleDelegator
     def initialize(value)
       @value = value
-      super Regexp.new definition(value)
+      @transformed = definition(value)
+      super(Regexp.new "^#{@transformed}$")
     end
 
     def star?
@@ -22,6 +25,18 @@ module CottonTail
       return '#' if hash?
 
       @value
+    end
+
+    def match?(other)
+      return false unless other
+      return false if other.to_s.empty?
+      return super if other.is_a?(String)
+
+      false
+    end
+
+    def to_s
+      @transformed.to_s
     end
 
     private
@@ -61,10 +76,12 @@ module CottonTail
       ]
     end
 
-    STAR = /\*/.freeze
-    HASH = /#/.freeze
-    NAMED = /:(\w+)/.freeze
-    NAMED_STAR = /#{STAR}#{NAMED}/.freeze
-    NAMED_HASH = /#{HASH}#{NAMED}/.freeze
+    STAR = /\*/
+    HASH = /#/
+    NAMED = /:(\w+)/
+    NAMED_STAR = /#{STAR}#{NAMED}/
+    NAMED_HASH = /#{HASH}#{NAMED}/
+
+    private_constant :TRANSFORM, :STAR, :HASH, :NAMED, :NAMED_STAR, :NAMED_HASH
   end
 end

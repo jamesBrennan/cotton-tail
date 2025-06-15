@@ -28,7 +28,7 @@ module CottonTail
             }
           end
 
-          it { is_expected.to eql value }
+          it { is_expected.to match hash_including(host: 'example', port: 5672) }
         end
       end
 
@@ -54,11 +54,11 @@ module CottonTail
     describe '.middleware' do
       subject(:middleware) { configuration.middleware }
 
-      it { is_expected.to be nil }
-
       let(:stack_length) do
         -> { configuration.middleware ? configuration.middleware.send(:stack).length : 0 }
       end
+
+      it { is_expected.to be_nil }
 
       describe 'specifying new middleware' do
         it 'adds the given middleware to the stack' do

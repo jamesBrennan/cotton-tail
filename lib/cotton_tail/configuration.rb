@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'middleware'
+require 'amq/settings'
 
 module CottonTail
   # Configuration options
@@ -17,9 +18,8 @@ module CottonTail
     # to Bunny.new. Any valid params for Bunny.new are accepted.
     #
     # @see http://rubybunny.info/articles/connecting.html
-    def connection_args=(*args, **kwargs)
-      url, = args
-      @connection_args = url ? Bunny::Session.parse_uri(url) : kwargs
+    def connection_args=(params)
+      @connection_args = AMQ::Settings.configure(params)
     end
 
     # Modify or retrieve the application middleware stack.

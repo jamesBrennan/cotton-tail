@@ -3,7 +3,7 @@
 module CottonTail
   module Queue
     describe Bunny do
-      include_context 'rabbitmq_api'
+      include_context 'with rabbitmq_api'
 
       subject(:queue) { described_class.new(**kwargs) }
 
@@ -23,11 +23,11 @@ module CottonTail
         end
       end
 
-      context 'given a name of nil' do
+      context 'when name is nil' do
         let(:name) { nil }
 
         it 'sets the name to the queue name created by the server' do
-          expect(queue).to be_an_instance_of(CottonTail::Queue::Bunny)
+          expect(queue).to be_an_instance_of(described_class)
           # expect(queue).to respond_to?(:name)
           # expect(queue.name).not_to be_nil
         end

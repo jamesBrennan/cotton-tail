@@ -2,8 +2,8 @@ version: 2
 jobs:
   build:
     docker:
-       - image: circleci/ruby:2.5.1-node-browsers
-       - image: rabbitmq:3.7-management
+      - image: cimg/ruby:3.3-node
+      - image: rabbitmq:3.7-management
 
     working_directory: ~/repo
 
@@ -22,8 +22,8 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "Gemfile.lock" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-dependencies-
 
       - run:
           name: install dependencies
