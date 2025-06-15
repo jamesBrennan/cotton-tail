@@ -5,7 +5,7 @@ module CottonTail
   class Route < SimpleDelegator
     def initialize(pattern)
       @pattern = pattern
-      super build_regex
+      super(build_regex)
     end
 
     def extract_params(routing_key)

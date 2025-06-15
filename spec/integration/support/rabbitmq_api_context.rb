@@ -5,8 +5,6 @@ require 'rabbitmq/http/client'
 require 'forwardable'
 
 RabbitAPI = Class.new do
-  DEFAULT_URL = 'http://guest:guest@localhost:15672'
-
   class << self
     extend Forwardable
 
@@ -25,7 +23,7 @@ RabbitAPI = Class.new do
     end
 
     def url
-      @url ||= ENV.fetch('AMQP_MANAGER_URL', DEFAULT_URL)
+      @url ||= ENV.fetch('AMQP_MANAGER_URL', 'http://guest:guest@localhost:15672')
     end
 
     def channel

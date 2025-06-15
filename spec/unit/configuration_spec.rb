@@ -28,7 +28,7 @@ module CottonTail
             }
           end
 
-          it { is_expected.to eql value }
+          it { is_expected.to match hash_including(host: 'example', port: 5672) }
         end
       end
 

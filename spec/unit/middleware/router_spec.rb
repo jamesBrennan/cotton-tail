@@ -6,7 +6,7 @@ module CottonTail
     describe Router do
       subject(:router) { described_class.new(app, handlers: route_handlers) }
 
-      let(:env) { Hash[] }
+      let(:env) { {} }
       let(:request) { CottonTail::Request.new(delivery_info, properties, payload) }
       let(:properties) { MessageProperties.new({}) }
       let(:response) { CottonTail::Response.new }
@@ -23,7 +23,7 @@ module CottonTail
           let(:routing_key) { 'my.test.route' }
           let(:handler) { double('handler') }
           let(:route) { Route.new(routing_key) }
-          let(:route_handlers) { Hash[route, handler] }
+          let(:route_handlers) { { route => handler } }
 
           it 'calls the handler and then calls app with the handler response' do
             expect(handler).to receive(:call) do |handler_env, handler_req, handler_res|
@@ -47,10 +47,7 @@ module CottonTail
           let(:exact_handler) { double('exact handler', call: 'exact') }
 
           let(:route_handlers) do
-            Hash[
-              Route.new('a.b.*'), wildcard_handler,
-              Route.new('a.b.c'), exact_handler
-            ]
+            { Route.new('a.b.*') => wildcard_handler, Route.new('a.b.c') => exact_handler }
           end
 
           let(:routing_key) { 'a.b.c' }
@@ -62,7 +59,7 @@ module CottonTail
 
         context 'when route is not defined' do
           let(:routing_key) { 'some.unknown.route' }
-          let(:route_handlers) { Hash[] }
+          let(:route_handlers) { {} }
 
           it 'raises an error' do
             expect { router.call(message) }.to raise_error(UndefinedRouteError)
@@ -77,7 +74,7 @@ module CottonTail
         let(:routing_key) { 'company.user.add' }
         let(:handler) { double('handler') }
         let(:route) { Route.new(route_definition) }
-        let(:route_handlers) { Hash[route, handler] }
+        let(:route_handlers) { { route => handler } }
 
         before { allow(app).to receive(:call) }
 

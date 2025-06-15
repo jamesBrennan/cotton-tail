@@ -5,7 +5,7 @@ module CottonTail
   class RouteSegment < SimpleDelegator
     def initialize(value)
       @value = value
-      super Regexp.new definition(value)
+      super(Regexp.new definition(value))
     end
 
     def star?
@@ -61,10 +61,10 @@ module CottonTail
       ]
     end
 
-    STAR = /\*/.freeze
-    HASH = /#/.freeze
-    NAMED = /:(\w+)/.freeze
-    NAMED_STAR = /#{STAR}#{NAMED}/.freeze
-    NAMED_HASH = /#{HASH}#{NAMED}/.freeze
+    STAR = /\*/
+    HASH = /#/
+    NAMED = /:(\w+)/
+    NAMED_STAR = /#{STAR}#{NAMED}/
+    NAMED_HASH = /#{HASH}#{NAMED}/
   end
 end
