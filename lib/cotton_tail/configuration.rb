@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'middleware'
+require 'amq/settings'
 
 module CottonTail
   # Configuration options

@@ -26,18 +26,18 @@ module CottonTail
           let(:route_handlers) { { route => handler } }
 
           before do
-            allow(handler).to receive(:call)
+            allow(handler).to receive(:call).and_return('return val')
             allow(app).to receive(:call)
-            router.call(message)
           end
 
           # rubocop:disable RSpec/ExampleLength
           it 'calls the handler and then calls app with the handler response' do
+            router.call(message)
+
             expect(handler).to have_received(:call) do |handler_env, handler_req, handler_res|
               expect(handler_env).to eql env
               expect(handler_req).to be_a Request
               expect(handler_res).to eql response
-              'return val'
             end
 
             expect(app).to have_received(:call) do |next_env, next_req, next_res|
