@@ -2,7 +2,7 @@
 
 module CottonTail
   describe 'Defining a CottonTail App' do
-    include_context 'rabbitmq_api'
+    include_context 'with rabbitmq_api'
 
     before do
       watch_start = start_handler
@@ -35,10 +35,10 @@ module CottonTail
       CottonTail::App.new(connection: connection, queue_strategy: Queue::Memory)
     end
 
-    let(:start_handler) { double('start') }
-    let(:top_handler) { double('start') }
-    let(:named_handler) { double('named') }
-    let(:other_handler) { double('other') }
+    let(:start_handler) { instance_double(Proc, 'start') }
+    let(:top_handler) { instance_double(Proc, 'top') }
+    let(:named_handler) { instance_double(Proc, 'named') }
+    let(:other_handler) { instance_double(Proc, 'other') }
 
     it 'runs without errors' do
       expect(app).to be_truthy
@@ -74,17 +74,25 @@ module CottonTail
         queue.push named_request
         other_queue.push other_request
 
-        expect(start_handler).to receive(:call).with([env, start_request, Response])
-        expect(top_handler).to receive(:call).with([env, top_request, Response])
-        expect(other_handler).to receive(:call).with([env, other_request, Response])
-        expect(named_handler).to receive(:call).with([env, named_request, Response])
+        allow(start_handler).to receive(:call)
+        allow(top_handler).to receive(:call)
+        allow(other_handler).to receive(:call)
+        allow(named_handler).to receive(:call)
 
         app.run
+
+        expect(start_handler).to have_received(:call).with([env, start_request, Response])
+        expect(top_handler).to have_received(:call).with([env, top_request, Response])
+        expect(other_handler).to have_received(:call).with([env, other_request, Response])
+        expect(named_handler).to have_received(:call).with([env, named_request, Response])
       end
     end
 
     describe 'using middleware' do
-      let(:middleware_end_handler) { spy('middleware_end') }
+      let(:middleware_end_handler) { instance_double(Proc, 'middleware_end') }
+      let(:queue) { app.queues.first }
+      let(:routing_key) { 'some.topic.prefix.job.start' }
+      let(:request) { build_request(routing_key, 'hello!') }
 
       before do
         app.config.middleware do |m|
@@ -98,17 +106,13 @@ module CottonTail
         allow(other_handler).to receive(:call)
       end
 
-      let(:queue) { app.queues.first }
-      let(:routing_key) { 'some.topic.prefix.job.start' }
-      let(:request) { build_request(routing_key, 'hello!') }
-
       it 'Applies the middleware' do
-        expect(middleware_end_handler).to(
-          receive(:call).with('HELLO!')
-        )
+        allow(middleware_end_handler).to receive(:call)
 
         queue.push request
         app.run
+
+        expect(middleware_end_handler).to have_received(:call).with('HELLO!')
       end
     end
   end

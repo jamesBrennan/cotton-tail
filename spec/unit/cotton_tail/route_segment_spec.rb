@@ -9,16 +9,19 @@ module CottonTail
 
       context 'given "*"' do
         let(:definition) { '*' }
+
         it { is_expected.to be true }
       end
 
       context 'given "*:named"' do
         let(:definition) { '*:named' }
+
         it { is_expected.to be true }
       end
 
       context 'given anything else' do
         let(:definition) { 'hel*o' }
+
         it { is_expected.to be false }
       end
     end
@@ -28,16 +31,19 @@ module CottonTail
 
       context 'given "#"' do
         let(:definition) { '#' }
+
         it { is_expected.to be true }
       end
 
       context 'given "#:named"' do
         let(:definition) { '#:named' }
+
         it { is_expected.to be true }
       end
 
       context 'given anything else' do
         let(:definition) { 'hel#o' }
+
         it { is_expected.to be false }
       end
     end
@@ -47,12 +53,12 @@ module CottonTail
         let(:definition) { 'some-string' }
 
         it 'matches on string equality' do
-          expect { segment.match?('some-string').to be true }
+          expect(segment.match?('some-string')).to be true
 
-          expect { segment.match?('anything-else').to be false }
-          expect { segment.match?(nil).to be false }
-          expect { segment.match?(1).to be false }
-          expect { segment.match?({}).to be false }
+          expect(segment.match?('anything-else')).to be false
+          expect(segment.match?(nil)).to be false
+          expect(segment.match?(1)).to be false
+          expect(segment.match?({})).to be false
         end
       end
 
@@ -60,13 +66,13 @@ module CottonTail
         let(:definition) { '*' }
 
         it 'matches any non-empty string without a "." character' do
-          expect { segment.match?('any string').to be true }
+          expect(segment.match?('any string')).to be true
 
-          expect { segment.match?('my.string').to be false }
-          expect { segment.match?('').to be false }
-          expect { segment.match?(nil).to be false }
-          expect { segment.match?(1).to be false }
-          expect { segment.match?({}).to be false }
+          expect(segment.match?('my.string')).to be false
+          expect(segment.match?('')).to be false
+          expect(segment.match?(nil)).to be false
+          expect(segment.match?(1)).to be false
+          expect(segment.match?({})).to be false
         end
       end
 
@@ -74,13 +80,13 @@ module CottonTail
         let(:definition) { '#' }
 
         it 'matches any non-empty string' do
-          expect { segment.match?('any string').to be true }
-          expect { segment.match?('any.string.value').to be true }
+          expect(segment.match?('any string')).to be true
+          expect(segment.match?('any.string.value')).to be true
 
-          expect { segment.match?('').to be false }
-          expect { segment.match?(nil).to be false }
-          expect { segment.match?(1).to be false }
-          expect { segment.match?({}).to be false }
+          expect(segment.match?('')).to be false
+          expect(segment.match?(nil)).to be false
+          expect(segment.match?(1)).to be false
+          expect(segment.match?({})).to be false
         end
       end
 
@@ -88,13 +94,13 @@ module CottonTail
         let(:definition) { '*:foo' }
 
         it 'matches any non-empty string without a "." character' do
-          expect { segment.match?('any string').to be true }
+          expect(segment.match?('any string')).to be true
 
-          expect { segment.match?('my.string').to be false }
-          expect { segment.match?('').to be false }
-          expect { segment.match?(nil).to be false }
-          expect { segment.match?(1).to be false }
-          expect { segment.match?({}).to be false }
+          expect(segment.match?('my.string')).to be false
+          expect(segment.match?('')).to be false
+          expect(segment.match?(nil)).to be false
+          expect(segment.match?(1)).to be false
+          expect(segment.match?({})).to be false
         end
       end
 
@@ -102,13 +108,13 @@ module CottonTail
         let(:definition) { '#:foo' }
 
         it 'matches any non-empty string' do
-          expect { segment.match?('any string').to be true }
-          expect { segment.match?('any.string.value').to be true }
+          expect(segment.match?('any string')).to be true
+          expect(segment.match?('any.string.value')).to be true
 
-          expect { segment.match?('').to be false }
-          expect { segment.match?(nil).to be false }
-          expect { segment.match?(1).to be false }
-          expect { segment.match?({}).to be false }
+          expect(segment.match?('')).to be false
+          expect(segment.match?(nil)).to be false
+          expect(segment.match?(1)).to be false
+          expect(segment.match?({})).to be false
         end
       end
     end

@@ -54,7 +54,7 @@ RSpec::Matchers.define :exist_on_server do
   end
 end
 
-RSpec.shared_context 'rabbitmq_api', shared_context: :metadata do
+RSpec.shared_context 'with rabbitmq_api', shared_context: :metadata do
   def delete_queues(*queues)
     queues.each { |name| delete_queue name }
   end

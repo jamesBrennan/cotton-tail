@@ -40,6 +40,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec-its', '~> 2.0'
   spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'rubocop', '~> 1.76'
+  spec.add_development_dependency 'rubocop-rake', '~> 0.7.1'
+  spec.add_development_dependency 'rubocop-rspec', '~> 3.6'
   spec.add_development_dependency 'ruby-debug-ide', '0.7.5'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end

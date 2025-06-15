@@ -93,6 +93,12 @@ GEM
     rubocop-ast (1.45.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
+    rubocop-rake (0.7.1)
+      lint_roller (~> 1.1)
+      rubocop (>= 1.72.1)
+    rubocop-rspec (3.6.0)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
     ruby-debug-ide (0.7.5)
       rake (>= 0.8.1)
     ruby-progressbar (1.13.0)
@@ -120,6 +126,8 @@ DEPENDENCIES
   rspec-its (~> 2.0)
   rspec_junit_formatter
   rubocop (~> 1.76)
+  rubocop-rake (~> 0.7.1)
+  rubocop-rspec (~> 3.6)
   ruby-debug-ide (= 0.7.5)
 
 BUNDLED WITH

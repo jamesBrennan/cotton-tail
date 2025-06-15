@@ -3,7 +3,7 @@
 # Run specs against RabbitMQ server
 module CottonTail
   describe App do
-    include_context 'rabbitmq_api'
+    include_context 'with rabbitmq_api'
 
     subject(:app) { described_class.new(queue_strategy: queue_strategy) }
 
@@ -54,6 +54,8 @@ module CottonTail
               handle 'a.b.c', null_handler
             end
           end
+
+          expect { app.run }.not_to raise_error
         end
       end
     end
