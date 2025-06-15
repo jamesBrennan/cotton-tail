@@ -18,4 +18,4 @@ RUN bundle install --without development
 # copy the contents to working directory
 COPY . /usr/src/cotton_tail
 
-CMD ash
+CMD ["ash"]
