@@ -32,7 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'ibsciss-middleware', '~> 0.4.3'
 
   spec.add_development_dependency 'bundler', '~> 2.5'
-  spec.add_development_dependency 'debase', '0.2.9'
   spec.add_development_dependency 'rabbitmq_http_api_client', '~> 3.0'
   spec.add_development_dependency 'rake', '~> 13.3'
   spec.add_development_dependency 'rspec', '~> 3.13'
@@ -42,6 +41,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '~> 1.76'
   spec.add_development_dependency 'rubocop-rake', '~> 0.7.1'
   spec.add_development_dependency 'rubocop-rspec', '~> 3.6'
-  spec.add_development_dependency 'ruby-debug-ide', '0.7.5'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
