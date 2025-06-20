@@ -41,6 +41,11 @@ jobs:
             bundle exec rubocop
 
       - run:
+          name: quality checks
+          command: |
+            bundle exec qlty check
+
+      - run:
           name: unit tests
           command: |
             mkdir /tmp/test-results
