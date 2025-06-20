@@ -13,7 +13,6 @@ module CottonTail
   autoload :Request, 'cotton_tail/request'
   autoload :Route, 'cotton_tail/route'
   autoload :RouteSegment, 'cotton_tail/route_segment'
-  autoload :Router, 'cotton_tail/router'
   autoload :Version, 'cotton_tail/version'
 
   Response = Struct.new(:body)
