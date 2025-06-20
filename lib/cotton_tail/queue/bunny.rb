@@ -27,7 +27,7 @@ module CottonTail
         exchange.publish request.payload, routing_key: request.routing_key
       end
 
-      def pop
+      def pop(*args)
         delivery_info, properties, payload = super
         Request.new(delivery_info, MessageProperties.new(properties.to_h), payload)
       end
