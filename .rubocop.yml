@@ -9,27 +9,27 @@ plugins:
 Layout/LineLength:
   Max: 120
   Exclude:
-    - 'lib/tasks/**/*'
+    - lib/tasks/**/*
 
 Metrics/BlockLength:
   Exclude:
-    - 'spec/**/*'
-    - 'integration/**/*'
-    - '*.gemspec'
-    - 'examples/app.rb'
+    - spec/**/*
+    - integration/**/*
+    - "*.gemspec"
+    - examples/app.rb
 
 Metrics/MethodLength:
   Max: 20
 
 Metrics/ModuleLength:
   Exclude:
-    - 'spec/**/*'
-    - 'integration/**/*'
+    - spec/**/*
+    - integration/**/*
 
 Style/Documentation:
   Exclude:
-    - 'spec/**/*'
-    - 'integration/**/*'
+    - spec/**/*
+    - integration/**/*
 
 Style/OptionalBooleanParameter:
   Enabled: false
@@ -45,26 +45,26 @@ Gemspec/DevelopmentDependencies:
 RSpec/ExampleLength:
   Max: 10
   Exclude:
-    - 'spec/integration/cotton_tail/app_spec.rb'
-    - 'spec/integration/dsl_integration_spec.rb'
+    - spec/integration/cotton_tail/app_spec.rb
+    - spec/integration/dsl_integration_spec.rb
 
 RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/VerifiedDoubles:
   Exclude:
-    - 'spec/integration/cotton_tail/app_spec.rb'
+    - spec/integration/cotton_tail/app_spec.rb
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
 RSpec/ContextWording:
   Prefixes:
-    - 'given'
-    - 'when'
-    - 'with'
-    - 'without'
-    - 'and'
+    - given
+    - when
+    - with
+    - without
+    - and
 
 RSpec/NestedGroups:
   Max: 4

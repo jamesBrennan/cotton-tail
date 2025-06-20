@@ -16,11 +16,11 @@ gem 'cotton-tail'
 
 And then execute:
 
-    $ bundle
+    bundle
 
 Or install it yourself as:
 
-    $ gem install cotton-tail
+    gem install cotton-tail
 
 ## Usage
 
@@ -76,11 +76,11 @@ in another terminal window to see output in the app window.
 
 ## Development
 
-After checking out the repo, install docker. Then, run `docker-compose` up to 
+After checking out the repo, install docker. Then, run `docker-compose` up to
 spin up a local instance of rabbitmq. Run `rake spec:all` to run the tests.
-You can also run `bin/console` for an interactive prompt that will allow you 
+You can also run `bin/console` for an interactive prompt that will allow you
 to experiment.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/jamesBrennan/cotton-tail.
+Bug reports and pull requests are welcome on GitHub at <https://github.com/jamesBrennan/cotton-tail>.
