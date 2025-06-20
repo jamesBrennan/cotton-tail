@@ -31,6 +31,20 @@ module CottonTail
       sleep 0.01 while running?
     end
 
+    def stop
+      supervisors.each do |sup|
+        sup.stop
+      rescue StandardError => e
+        warn "Error stopping supervisor: #{e.message}"
+      end
+
+      begin
+        @connection.close unless @connection.closed?
+      rescue StandardError => e
+        warn "Error closing connection: #{e.message}"
+      end
+    end
+
     def routes
       @routes ||= DSL::Routes.new(**@dependencies)
     end

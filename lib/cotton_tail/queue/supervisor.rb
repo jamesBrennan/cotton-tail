@@ -23,6 +23,20 @@ module CottonTail
         thread.alive?
       end
 
+      # Gracefully stop the supervisor: prevent further messages and wait for
+      # the processing thread to finish.
+      def stop
+        return unless running?
+
+        begin
+          @queue.close
+        rescue StandardError => e
+          warn "Error closing queue: #{e.message}"
+        end
+
+        thread.join if thread.alive?
+      end
+
       private
 
       def thread
