@@ -90,6 +90,9 @@ GEM
     rubocop-ast (1.45.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
+    rubocop-packaging (0.6.0)
+      lint_roller (~> 1.1.0)
+      rubocop (>= 1.72.1, < 2.0)
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
@@ -120,6 +123,7 @@ DEPENDENCIES
   rspec-its (~> 2.0)
   rspec_junit_formatter
   rubocop (~> 1.76)
+  rubocop-packaging (~> 0.6)
   rubocop-rake (~> 0.7.1)
   rubocop-rspec (~> 3.6)
 
