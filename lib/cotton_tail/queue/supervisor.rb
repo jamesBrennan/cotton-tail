@@ -23,6 +23,13 @@ module CottonTail
         thread.alive?
       end
 
+      # Gracefully stop the supervisor: prevent further messages and wait for
+      # the processing thread to finish.
+      def stop
+        @queue.close
+        thread.join
+      end
+
       private
 
       def thread

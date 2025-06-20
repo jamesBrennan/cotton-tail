@@ -31,6 +31,11 @@ module CottonTail
       sleep 0.01 while running?
     end
 
+    def stop
+      supervisors.map(&:stop)
+      @connection.close
+    end
+
     def routes
       @routes ||= DSL::Routes.new(**@dependencies)
     end

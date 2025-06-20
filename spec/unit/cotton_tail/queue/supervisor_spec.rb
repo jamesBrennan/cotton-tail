@@ -26,6 +26,18 @@ module CottonTail
           expect { start }.to perform_under(0.1).sec
         end
       end
+
+      describe '.stop' do
+        before { supervisor.start }
+
+        it 'stops the processing thread' do
+          expect(supervisor.running?).to be true
+
+          supervisor.stop
+
+          expect(supervisor.running?).to be false
+        end
+      end
     end
   end
 end

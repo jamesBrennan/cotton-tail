@@ -154,5 +154,38 @@ module CottonTail
         expect(query_handler).to have_received(:call).exactly(2).times
       end
     end
+
+    describe '#stop' do
+      let(:stop_queue) { 'stop_test_queue' }
+
+      before do
+        delete_queues stop_queue
+
+        q = stop_queue # capture local variable
+        app.routes.draw do
+          queue q do
+            handle 'a.b.c', ->(_e, _r, _s) {}
+          end
+        end
+      end
+
+      after { delete_queues stop_queue }
+
+      it 'closes the Bunny connection and stops all supervisors' do
+        connection = app.instance_variable_get(:@connection)
+        expect(connection).to be_a(Bunny::Session)
+        expect(connection).not_to be_closed
+
+        # Process (empty) queue then stop the app
+        app.run
+        app.stop
+
+        # Connection should now report closed
+        expect(connection).to be_closed
+
+        # All supervisors should report not running
+        expect(app.send(:supervisors)).to all(satisfy { |sup| !sup.running? })
+      end
+    end
   end
 end
