@@ -4,10 +4,7 @@
 [![Depfu](https://badges.depfu.com/badges/4a33988ba774e985f135172f5f17d86f/overview.svg)](https://depfu.com/github/jamesBrennan/cotton-tail?project_id=6465)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/jamesBrennan/cotton-tail)
 
-CottonTail provides a simple DSL for consuming messages from a RabbitMQ server. It lets you declare RabbitMQ queues and routing-key patterns as elegantly as you declare HTTP routes in a web framework, processes messages through a familiar middleware pipeline, and keeps all the AMQP/Bunny plumbing out of sight.
-
-This gem is in development. The API will be unstable until the 1.0.0
-release.
+CottonTail lets you declare RabbitMQ queues and routing-key patterns as elegantly as you declare HTTP routes in a web framework, processes messages through a familiar middleware pipeline, and keeps all the AMQP/Bunny plumbing out of sight.
 
 ## Installation
 
@@ -27,10 +24,28 @@ Or install it yourself as:
 
 ## Usage
 
-### Quick Start
+### Quick Start (Hello World)
 
-You can look at the file `examples/app.rb` to see an example of what a CottonTail
-App definition looks like.
+```ruby
+require 'bundler/setup'
+require 'cotton_tail'
+
+app = CottonTail::App.new
+
+app.routes.draw do
+  # Create the queue 'hello_world' if it does not exists
+  queue 'hello_world', exclusive: true do
+    # Create a binding from the default topic exchange ('amq.topic') to
+    # the queue 'hello_world_queue'. When a message is received with the
+    # routing key 'say.hello' the block is executed.
+    handle 'say.hello' do
+      puts 'Hello world!'
+    end
+  end
+end
+
+app.start
+```
 
 To run the example locally you need to have a rabbitmq instance running. The
 included `docker-compose` file can be used to start up a local instance of
