@@ -4,9 +4,9 @@
 [![Depfu](https://badges.depfu.com/badges/4a33988ba774e985f135172f5f17d86f/overview.svg)](https://depfu.com/github/jamesBrennan/cotton-tail?project_id=6465)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/jamesBrennan/cotton-tail)
 
-CottonTail provides a simple DSL for consuming messages from a RabbitMQ server.
+CottonTail provides a simple DSL for consuming messages from a RabbitMQ server. It lets you declare RabbitMQ queues and routing-key patterns as elegantly as you declare HTTP routes in a web framework, processes messages through a familiar middleware pipeline, and keeps all the AMQP/Bunny plumbing out of sight.
 
-This gem is in early development. The API will be unstable until the 1.0.0
+This gem is in development. The API will be unstable until the 1.0.0
 release.
 
 ## Installation

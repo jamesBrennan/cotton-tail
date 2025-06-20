@@ -58,7 +58,7 @@ module CottonTail
       end
 
       def route_params?(route, routing_key)
-        route.extract_params(routing_key) == {} || true
+        !route.extract_params(routing_key).empty?
       end
     end
   end
