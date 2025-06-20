@@ -99,6 +99,10 @@ GEM
     rubocop-rspec (3.6.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
+    rubocop-thread_safety (0.7.3)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
+      rubocop-ast (>= 1.44.0, < 2.0)
     ruby-progressbar (1.13.0)
     set (1.1.2)
     sorted_set (1.0.3)
@@ -126,6 +130,7 @@ DEPENDENCIES
   rubocop-packaging (~> 0.6)
   rubocop-rake (~> 0.7.1)
   rubocop-rspec (~> 3.6)
+  rubocop-thread_safety (~> 0.7)
 
 BUNDLED WITH
    2.5.9
