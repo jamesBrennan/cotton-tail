@@ -10,7 +10,7 @@ module CottonTail
       end
 
       def start
-        process
+        thread
       end
 
       # Start the supervisor, process all pending messages, and then stop
@@ -20,13 +20,13 @@ module CottonTail
       end
 
       def running?
-        true & process.status
+        thread.alive?
       end
 
       private
 
-      def process
-        @process ||= Reader.spawn(@queue, app: @app)
+      def thread
+        @thread ||= Reader.spawn(@queue, app: @app)
       end
     end
   end
