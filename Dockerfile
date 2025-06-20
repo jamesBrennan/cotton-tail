@@ -19,8 +19,8 @@ RUN bundle install --without development
 COPY . /usr/src/cotton_tail
 
 # Add a non-root user to satisfy security best-practices
-RUN addgroup -S app && adduser -S app -G app
-
+RUN addgroup -S app && adduser -S app -G app \
+  && chown -R app:app /usr/src/cotton_tail
 # Switch to the non-root user for subsequent operations
 USER app
 
