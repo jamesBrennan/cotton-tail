@@ -108,11 +108,38 @@ module CottonTail
 
           before do
             allow(handler).to receive(:call)
+            allow(app).to receive(:call)
             router.call(message)
           end
 
           it 'routes correctly' do
             expect(handler).to have_received(:call)
+          end
+        end
+      end
+
+      # ------------------------------------------------------------------
+      # Regression-spec for bug in `route_params?` (always returns true)
+      # ------------------------------------------------------------------
+      describe 'static routes should not inject route params' do
+        let(:payload) { 'payload' }
+
+        let(:route_definition) { 'static.routing.key' }
+        let(:routing_key)      { 'static.routing.key' }
+
+        let(:handler) { instance_double(Proc, 'handler') }
+        let(:route)   { Route.new(route_definition) }
+        let(:route_handlers) { { route => handler } }
+
+        before do
+          allow(handler).to receive(:call)
+          allow(app).to receive(:call)
+          router.call(message)
+        end
+
+        it 'does not add :route_params to the request properties' do
+          expect(handler).to have_received(:call) do |_env, req, _res|
+            expect(req.route_params).to be_nil
           end
         end
       end
