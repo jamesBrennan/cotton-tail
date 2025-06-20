@@ -15,7 +15,22 @@ module CottonTail
 
       def fiber
         @fiber ||= Fiber.new do
-          Fiber.yield @queue.pop until @queue.empty? && @queue.closed?
+          loop do
+            msg = begin
+              # Non-blocking pop; raises ThreadError when queue is empty
+              @queue.pop(true)
+            rescue ThreadError
+              nil
+            end
+
+            Fiber.yield msg if msg
+
+            # Exit once producer has signalled no more messages
+            break if @queue.closed? && @queue.empty?
+
+            # Back-off a little to avoid busy-loop when idle
+            sleep 0.01 unless msg
+          end
         end
       end
 
