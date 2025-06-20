@@ -36,7 +36,7 @@ app.routes.draw do
   # Create the queue 'hello_world' if it does not exists
   queue 'hello_world', exclusive: true do
     # Create a binding from the default topic exchange ('amq.topic') to
-    # the queue 'hello_world_queue'. When a message is received with the
+    # the queue 'hello_world'. When a message is received with the
     # routing key 'say.hello' the block is executed.
     handle 'say.hello' do
       puts 'Hello world!'
